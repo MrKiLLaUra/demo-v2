@@ -111,7 +111,7 @@ export function HomePage({
           <motion.div className="flex flex-wrap gap-8 md:gap-12 justify-center mt-16 md:mt-20" variants={staggerItem}>
             {[
               ["200+", "Cars Sold"],
-              ["8", "Years Experience"],
+              ["7+", "Years Experience"],
               ["100%", "Transparent Pricing"],
               ["24/7", "AI Assistant"],
             ].map(([n, l]) => (

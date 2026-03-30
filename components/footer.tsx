@@ -16,7 +16,7 @@ const navLinks = [
 
 const serviceLinks = ["Used Cars", "Car Sourcing", "Financing", "Insurance"]
 
-const contactLinks = ["+357 99 000 000", "info@apexmotors.cy", "Limassol, Cyprus"]
+const contactLinks = ["+35799929323", "sambitopgearmotors@gmail.com", "Limassol, Cyprus"]
 
 export function Footer({ setPage }: FooterProps) {
   return (

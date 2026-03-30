@@ -6,7 +6,7 @@ const team = [
   { 
     name: "Andreas Nikolaou", 
     role: "Founder & CEO", 
-    bio: "15+ years in the automotive industry. Started Sambi Top Gear with one simple mission: make buying a used car in Cyprus actually enjoyable." 
+    bio: "7+ years in the automotive industry. Started Sambi Top Gear with one simple mission: make buying a used car in Cyprus actually enjoyable." 
   },
   { 
     name: "Maria Stavrou", 
@@ -23,7 +23,7 @@ const team = [
 const stats = [
   ["2018", "Founded"],
   ["200+", "Cars Sold"],
-  ["8yrs", "Experience"],
+  ["7+ years", "Experience"],
   ["100%", "Inspected"],
 ]
 
@@ -47,7 +47,7 @@ export function AboutPage() {
                 We set out to do it differently. Every car we sell is fully inspected, honestly described, and fairly priced. And with our AI pricing engine, you always know the real market value before you buy.
               </p>
               <p>
-                {"8 years later, we've sold 200+ vehicles and earned a reputation for being the dealership people actually trust."}
+                {"7+ years later, we've sold 200+ vehicles and earned a reputation for being the dealership people actually trust."}
               </p>
             </div>
           </div>

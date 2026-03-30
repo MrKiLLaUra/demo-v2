@@ -8,8 +8,8 @@ import { MapPin, Phone, Mail, Clock } from "lucide-react"
 
 const contactInfo = [
   { icon: MapPin, label: "Address", value: "Limassol, Cyprus" },
-  { icon: Phone, label: "Phone / WhatsApp", value: "+357 99 000 000" },
-  { icon: Mail, label: "Email", value: "info@apexmotors.cy" },
+  { icon: Phone, label: "Phone / WhatsApp", value: "+35799929323" },
+  { icon: Mail, label: "Email", value: "sambitopgearmotors@gmail.com" },
   { icon: Clock, label: "Hours", value: "Mon–Sat: 9:00 – 19:00" },
 ]
 
@@ -41,7 +41,7 @@ export function ContactPage() {
         },
         body: JSON.stringify({
           access_key: accessKey,
-          from_name: "Apex Motors Website",
+          from_name: "Sambi Top Gear Motors Website",
           subject: form.subject || "New lead from website contact form",
           name: form.name,
           email: form.email,

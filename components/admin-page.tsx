@@ -119,12 +119,12 @@ export function AdminPage({ inventory, updateInventory, auth, setAuth, goHome }:
                 placeholder="Enter password"
                 value={adminPass}
                 onChange={e => setAdminPass(e.target.value)}
-                onKeyDown={e => e.key === "Enter" && adminPass === "apex2026" && setAuth(true)}
+                onKeyDown={e => e.key === "Enter" && adminPass === "SAMBI2026" && setAuth(true)}
                 className="mb-4 tracking-widest bg-input/60 border-border/70"
               />
               <div className="flex gap-3">
                 <Button 
-                  onClick={() => adminPass === "apex2026" ? setAuth(true) : alert("Incorrect. Hint: apex2026")}
+                  onClick={() => adminPass === "SAMBI2026" ? setAuth(true) : alert("Incorrect.")}
                   className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground font-display tracking-widest"
                 >
                   <Lock className="w-4 h-4 mr-2" />
@@ -138,7 +138,7 @@ export function AdminPage({ inventory, updateInventory, auth, setAuth, goHome }:
                   Back
                 </Button>
               </div>
-              <p className="text-[10px] text-muted-foreground/50 mt-6">demo: apex2026</p>
+              <p className="text-[10px] text-muted-foreground/50 mt-6">demo: SAMBI2026</p>
             </div>
           </div>
         </div>

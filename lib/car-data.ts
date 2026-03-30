@@ -26,7 +26,7 @@ export type Page = "home" | "inventory" | "services" | "about" | "contact" | "ad
 
 export type SortOption = "price-low" | "price-high" | "year-new" | "year-old" | "mileage-low" | "mileage-high"
 
-const FAVORITES_KEY = "apex_favorites"
+const FAVORITES_KEY = "sambi_favorites"
 const INVENTORY_KEY = "sambi_cars"
 
 // Default inventory with placeholder car images
@@ -65,7 +65,7 @@ export const PRICE_RANGES = [
   { label: "€50,000+", value: "50000+" },
 ]
 
-export const YEARS = Array.from({ length: 20 }, (_, i) => 2025 - i)
+export const YEARS = Array.from({ length: 20 }, (_, i) => 2026 - i)
 
 // Utility functions
 export const fmt = (n: number) => new Intl.NumberFormat("en-EU", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(n)
