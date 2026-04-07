@@ -54,7 +54,7 @@ export function FavoritesDrawer({
                 >
                   {/* Image */}
                   <div className="w-24 h-20 bg-secondary shrink-0 relative overflow-hidden">
-                    {car.images.preview ? (
+                    {car.images?.preview ? (
                       <Image
                         src={car.images.preview}
                         alt={`${car.year} ${car.make} ${car.model}`}

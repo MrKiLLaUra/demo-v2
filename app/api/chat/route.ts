@@ -1,34 +1,39 @@
 import Anthropic from '@anthropic-ai/sdk'
-import { NextResponse } from 'next/server'
-import { defaultInventory } from '../../../lib/car-data'
+import { NextRequest, NextResponse } from 'next/server'
+import { fetchCars } from '../../../lib/car-data'
+import { Redis } from '@upstash/redis'
+import { Ratelimit } from '@upstash/ratelimit'
 
 type ChatMessage = {
   role: 'user' | 'assistant'
   content: string
 }
 
-const inventoryForPrompt = defaultInventory
-  .map((car) => {
-    const price = car.showPrice && car.price !== null ? `EUR ${car.price.toLocaleString('en-US')}` : 'Price on request'
-    return `- ${car.year} ${car.make} ${car.model} | Fuel: ${car.fuel} | Transmission: ${car.transmission} | Mileage: ${car.mileageRange} km | Color: ${car.color} | Condition: ${car.condition} | Price: ${price} | Description: ${car.description}`
-  })
-  .join('\n')
-
-const systemPrompt = `You are the elite AI concierge for Sambi Top Gear Motors in Limassol. You help users find cars in our inventory and book test drives. Use only the inventory provided below when discussing currently available cars. If a user asks for a car we don't have, politely explain we are actively sourcing cars and ask for their phone number so Kosmas can find it for them.
-
-Current inventory:
-${inventoryForPrompt}`
-
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 })
 
-export async function POST(request: Request) {
+const ratelimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(5, '1 m'),
+  analytics: true,
+})
+
+export async function POST(request: NextRequest) {
   try {
     if (!process.env.ANTHROPIC_API_KEY) {
       return NextResponse.json(
         { error: 'Missing ANTHROPIC_API_KEY environment variable.' },
         { status: 500 },
+      )
+    }
+
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'anonymous'
+    const { success } = await ratelimit.limit(ip)
+    if (!success) {
+      return NextResponse.json(
+        { error: 'Whoa there! Sambi AI is taking a quick breather to prevent spam. Please try again in a minute.' },
+        { status: 429 },
       )
     }
 
@@ -54,6 +59,19 @@ export async function POST(request: Request) {
     if (messages.length === 0) {
       return NextResponse.json({ error: 'No valid messages were provided.' }, { status: 400 })
     }
+
+    const cars = await fetchCars()
+    const inventoryForPrompt = cars
+      .map((car) => {
+        const price = car.showPrice && car.price !== null ? `EUR ${car.price.toLocaleString('en-US')}` : 'Price on request'
+        return `- ${car.year} ${car.make} ${car.model} | Fuel: ${car.fuel} | Transmission: ${car.transmission} | Mileage: ${car.mileage.toLocaleString()} km | Color: ${car.color} | Condition: ${car.condition} | Price: ${price} | Description: ${car.description}`
+      })
+      .join('\n')
+
+    const systemPrompt = `You are the elite AI concierge for Sambi Top Gear Motors in Limassol. You help users find cars in our inventory and book test drives. Use only the inventory provided below when discussing currently available cars. If a user asks for a car we don't have, politely explain we are actively sourcing cars and ask for their phone number so Kosmas can find it for them.
+
+Current inventory:
+${inventoryForPrompt}`
 
     const completion = await anthropic.messages.create({
       model: 'claude-4-sonnet-20250514',

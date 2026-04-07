@@ -5,7 +5,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { GitCompare, X, Car as CarIcon, Check, Minus } from "lucide-react"
-import { Car, fmt, getMileageLabel, getMileageNumeric } from "@/lib/car-data"
+import { Car, fmt } from "@/lib/car-data"
 
 interface CompareDrawerProps {
   open: boolean
@@ -41,9 +41,9 @@ export function CompareDrawer({
     },
     { 
       label: "Mileage", 
-      getValue: (car: Car) => getMileageLabel(car.mileageRange),
-      compare: (cars: Car[]) => Math.min(...cars.map(c => getMileageNumeric(c.mileageRange))),
-      isBest: (car: Car, best: number | null) => best !== null && getMileageNumeric(car.mileageRange) === best
+      getValue: (car: Car) => `${car.mileage.toLocaleString()} km`,
+      compare: (cars: Car[]) => Math.min(...cars.map(c => c.mileage)),
+      isBest: (car: Car, best: number | null) => best !== null && car.mileage === best
     },
     { 
       label: "Fuel", 
@@ -131,7 +131,7 @@ export function CompareDrawer({
                       <th key={car.id} className="p-2 text-left">
                         <div className="border border-border bg-card p-3">
                           <div className="relative h-28 bg-secondary mb-3 overflow-hidden">
-                            {car.images.preview ? (
+                            {car.images?.preview ? (
                               <Image
                                 src={car.images.preview}
                                 alt={`${car.year} ${car.make} ${car.model}`}

@@ -77,17 +77,9 @@ export function Footer({ setPage }: FooterProps) {
           <p className="text-xs text-muted-foreground/50 tracking-wide">
           2026 SAMBI TOP GEAR MOTORS · ALL RIGHTS RESERVED
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-end">
-            <button
-              onClick={() => setPage("admin")}
-              className="text-xs text-muted-foreground hover:text-foreground transition-colors tracking-widest"
-            >
-              Admin Panel
-            </button>
-            <p className="text-xs text-primary tracking-widest">
-              POWERED BY SAMBI AI
-            </p>
-          </div>
+          <p className="text-xs text-primary tracking-widest">
+            POWERED BY SAMBI AI
+          </p>
         </div>
       </div>
     </footer>

@@ -9,35 +9,28 @@ import { InventoryPage } from "@/components/inventory-page"
 import { ServicesPage } from "@/components/services-page"
 import { AboutPage } from "@/components/about-page"
 import { ContactPage } from "@/components/contact-page"
-import { AdminPage } from "@/components/admin-page"
 import { Footer } from "@/components/footer"
 import { CompareDrawer } from "@/components/compare-drawer"
 import { FavoritesDrawer } from "@/components/favorites-drawer"
-import { Car, Page, loadInventory, saveInventory, loadFavorites, saveFavorites } from "@/lib/car-data"
+import { Car, Page, fetchCars, loadFavorites, saveFavorites } from "@/lib/car-data"
 
 export default function App() {
   const [page, setPage] = useState<Page>("home")
   const [inventory, setInventory] = useState<Car[]>([])
   const [favorites, setFavorites] = useState<number[]>([])
   const [compareList, setCompareList] = useState<number[]>([])
-  const [adminAuth, setAdminAuth] = useState(false)
   const [showCompare, setShowCompare] = useState(false)
   const [showFavorites, setShowFavorites] = useState(false)
 
   useEffect(() => {
     const initInventory = async () => {
-      const inv = await loadInventory()
+      const inv = await fetchCars()
       setInventory(inv)
     }
 
     void initInventory()
     setFavorites(loadFavorites())
   }, [])
-
-  const updInv = (inv: Car[]) => {
-    setInventory(inv)
-    void saveInventory(inv)
-  }
 
   const toggleFavorite = (id: number) => {
     const newFavorites = favorites.includes(id) 
@@ -95,18 +88,9 @@ export default function App() {
         {page === "services" && <ServicesPage setPage={setPage} />}
         {page === "about" && <AboutPage />}
         {page === "contact" && <ContactPage />}
-        {page === "admin" && (
-          <AdminPage 
-            inventory={inventory} 
-            updateInventory={updInv} 
-            auth={adminAuth} 
-            setAuth={setAdminAuth} 
-            goHome={() => setPage("home")} 
-          />
-        )}
       </main>
 
-      {page !== "admin" && <Footer setPage={setPage} />}
+      <Footer setPage={setPage} />
 
       <CompareDrawer 
         open={showCompare}

@@ -1,9 +1,11 @@
+import { supabase } from "@/lib/supabase"
+
 export interface Car {
   id: number
   make: string
   model: string
   year: number
-  mileageRange: string
+  mileage: number
   fuel: string
   transmission: string
   price: number | null
@@ -22,20 +24,11 @@ export interface Car {
   }
 }
 
-export type Page = "home" | "inventory" | "services" | "about" | "contact" | "admin"
+export type Page = "home" | "inventory" | "services" | "about" | "contact"
 
 export type SortOption = "price-low" | "price-high" | "year-new" | "year-old" | "mileage-low" | "mileage-high"
 
 const FAVORITES_KEY = "sambi_favorites"
-const INVENTORY_KEY = "sambi_cars"
-
-// Default inventory with placeholder car images
-export const defaultInventory: Car[] = [
-  { id: 1, make: "Porsche", model: "911 Turbo S", year: 2024, mileageRange: "0-999", fuel: "Petrol", transmission: "Automatic", price: 245000, showPrice: true, condition: "Excellent", color: "Other", description: "", images: { preview: "https://picsum.photos/seed/porsche-911-preview/1200/800", front: "https://picsum.photos/seed/porsche-911-front/1200/800", side: "https://picsum.photos/seed/porsche-911-side/1200/800", back: "https://picsum.photos/seed/porsche-911-back/1200/800", interior: "https://picsum.photos/seed/porsche-911-interior/1200/800", frontSeats: "https://picsum.photos/seed/porsche-911-front-seats/1200/800", rearSeats: "https://picsum.photos/seed/porsche-911-rear-seats/1200/800" } },
-  { id: 2, make: "Audi", model: "SQ5", year: 2023, mileageRange: "10000-29999", fuel: "Petrol", transmission: "Automatic", price: 65000, showPrice: true, condition: "Excellent", color: "Other", description: "", images: { preview: "https://picsum.photos/seed/audi-sq5-preview/1200/800", front: "https://picsum.photos/seed/audi-sq5-front/1200/800", side: "https://picsum.photos/seed/audi-sq5-side/1200/800", back: "https://picsum.photos/seed/audi-sq5-back/1200/800", interior: "https://picsum.photos/seed/audi-sq5-interior/1200/800", frontSeats: "https://picsum.photos/seed/audi-sq5-front-seats/1200/800", rearSeats: "https://picsum.photos/seed/audi-sq5-rear-seats/1200/800" } },
-  { id: 3, make: "Porsche", model: "Panamera", year: 2022, mileageRange: "30000-49999", fuel: "Hybrid", transmission: "Automatic", price: 95000, showPrice: true, condition: "Excellent", color: "Other", description: "", images: { preview: "https://picsum.photos/seed/porsche-panamera-preview/1200/800", front: "https://picsum.photos/seed/porsche-panamera-front/1200/800", side: "https://picsum.photos/seed/porsche-panamera-side/1200/800", back: "https://picsum.photos/seed/porsche-panamera-back/1200/800", interior: "https://picsum.photos/seed/porsche-panamera-interior/1200/800", frontSeats: "https://picsum.photos/seed/porsche-panamera-front-seats/1200/800", rearSeats: "https://picsum.photos/seed/porsche-panamera-rear-seats/1200/800" } },
-  { id: 4, make: "BMW", model: "M4 Competition", year: 2023, mileageRange: "10000-29999", fuel: "Petrol", transmission: "Automatic", price: 85000, showPrice: true, condition: "Excellent", color: "Other", description: "", images: { preview: "https://picsum.photos/seed/bmw-m4-preview/1200/800", front: "https://picsum.photos/seed/bmw-m4-front/1200/800", side: "https://picsum.photos/seed/bmw-m4-side/1200/800", back: "https://picsum.photos/seed/bmw-m4-back/1200/800", interior: "https://picsum.photos/seed/bmw-m4-interior/1200/800", frontSeats: "https://picsum.photos/seed/bmw-m4-front-seats/1200/800", rearSeats: "https://picsum.photos/seed/bmw-m4-rear-seats/1200/800" } },
-]
 
 // Constants
 export const MAKES = ["Audi","BMW","Citroën","Fiat","Ford","Honda","Hyundai","Kia","Lexus","Mazda","Mercedes-Benz","Mitsubishi","Nissan","Opel","Peugeot","Porsche","Renault","Seat","Škoda","Subaru","Suzuki","Toyota","Volkswagen","Volvo","Other"]
@@ -70,13 +63,12 @@ export const YEARS = Array.from({ length: 20 }, (_, i) => 2026 - i)
 // Utility functions
 export const fmt = (n: number) => new Intl.NumberFormat("en-EU", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(n)
 
-export function mileageInRange(carRange: string, filterRange: string): boolean {
+export function mileageInRange(mileage: number, filterRange: string): boolean {
   if (!filterRange) return true
-  const [cLow] = carRange.split("-").map(Number)
-  const [fLow, fHigh] = filterRange.includes("+") 
-    ? [parseInt(filterRange), Infinity] 
+  const [fLow, fHigh] = filterRange.includes("+")
+    ? [parseInt(filterRange), Infinity]
     : filterRange.split("-").map(Number)
-  return cLow >= fLow && cLow <= fHigh
+  return mileage >= fLow && mileage <= fHigh
 }
 
 export function priceInRange(price: number | null, filterRange: string): boolean {
@@ -85,11 +77,6 @@ export function priceInRange(price: number | null, filterRange: string): boolean
     ? [parseInt(filterRange), Infinity] 
     : filterRange.split("-").map(Number)
   return price >= fLow && price <= fHigh
-}
-
-export function getMileageNumeric(range: string): number {
-  const [low] = range.split("-").map(s => parseInt(s.replace("+", "")))
-  return low
 }
 
 export function sortCars(cars: Car[], sortBy: SortOption): Car[] {
@@ -108,73 +95,70 @@ export function sortCars(cars: Car[], sortBy: SortOption): Car[] {
       case "year-old":
         return a.year - b.year
       case "mileage-low":
-        return getMileageNumeric(a.mileageRange) - getMileageNumeric(b.mileageRange)
+        return a.mileage - b.mileage
       case "mileage-high":
-        return getMileageNumeric(b.mileageRange) - getMileageNumeric(a.mileageRange)
+        return b.mileage - a.mileage
       default:
         return 0
     }
   })
 }
 
-// Storage functions
-export async function loadInventory(): Promise<Car[]> {
-  if (typeof window === "undefined") return defaultInventory
-  try {
-    const raw = localStorage.getItem(INVENTORY_KEY)
-    if (!raw) return defaultInventory
-    const parsed = JSON.parse(raw) as (Car & { imageUrl?: string; images?: Partial<Car["images"]> & { seats?: string } })[]
-    if (!Array.isArray(parsed)) return defaultInventory
-    return parsed.map((car) => {
-      const fallbackImage = car.imageUrl || ""
-      const imageSet = car.images
-      if (imageSet) {
-        return {
-          ...car,
-          images: {
-            preview: imageSet.preview || fallbackImage,
-            front: imageSet.front || fallbackImage,
-            side: imageSet.side || fallbackImage,
-            back: imageSet.back || fallbackImage,
-            interior: imageSet.interior || fallbackImage,
-            frontSeats: imageSet.frontSeats || imageSet.seats || fallbackImage,
-            rearSeats: imageSet.rearSeats || fallbackImage,
-          },
-        }
-      }
-      return {
-        ...car,
-        images: {
-          preview: fallbackImage,
-          front: fallbackImage,
-          side: fallbackImage,
-          back: fallbackImage,
-          interior: fallbackImage,
-          frontSeats: fallbackImage,
-          rearSeats: fallbackImage,
-        },
-      }
-    })
-  } catch {
-    return defaultInventory
+// Supabase fetch
+const STORAGE_BUCKET = "car-images"
+
+function buildImageUrls(raw: unknown): Car["images"] {
+  const empty: Car["images"] = {
+    preview: "", front: "", side: "", back: "",
+    interior: "", frontSeats: "", rearSeats: "",
+  }
+
+  let parsed: unknown = raw
+  if (typeof raw === "string") {
+    try {
+      parsed = JSON.parse(raw)
+    } catch {
+      return empty
+    }
+  }
+
+  if (!parsed || typeof parsed !== "object") return empty
+
+  const folder = (parsed as Record<string, unknown>).folder
+  if (!folder || typeof folder !== "string" || !folder.trim()) return empty
+
+  const url = (suffix: string) =>
+    supabase.storage.from(STORAGE_BUCKET).getPublicUrl(`${folder}/${folder}${suffix}`).data.publicUrl
+
+  return {
+    preview:    url("-flip.jpg"),
+    front:      url("-front.jpg"),
+    side:       url("-side.jpg"),
+    back:       url("-back.jpg"),
+    interior:   url("-interior.jpg"),
+    frontSeats: url("-front-seats.jpg"),
+    rearSeats:  url("-rear-seats.jpg"),
   }
 }
 
-export async function saveInventory(inv: Car[]): Promise<void> {
-  if (typeof window === "undefined") return
-  try {
-    localStorage.setItem(INVENTORY_KEY, JSON.stringify(inv))
-  } catch {
-    // Silent fail
-  }
-}
-
-export async function addCar(car: Omit<Car, "id">): Promise<Car> {
-  const inventory = await loadInventory()
-  const nextId = inventory.length > 0 ? Math.max(...inventory.map((c) => c.id)) + 1 : 1
-  const newCar: Car = { id: nextId, ...car }
-  await saveInventory([...inventory, newCar])
-  return newCar
+export async function fetchCars(): Promise<Car[]> {
+  const { data, error } = await supabase.from("cars").select("*").order("id")
+  if (error) throw error
+  return (data ?? []).map((row) => ({
+    id:           row.id           as number,
+    make:         row.make         as string,
+    model:        row.model        as string,
+    year:         row.year         as number,
+    mileage:      row.mileage        as number,
+    fuel:         row.fuel         as string,
+    transmission: row.transmission as string,
+    price:        row.price        as number | null,
+    showPrice:    row.show_price   as boolean,
+    condition:    row.condition    as string,
+    color:        row.color        as string,
+    description:  row.description  as string,
+    images:       buildImageUrls(row.images),
+  }))
 }
 
 export function loadFavorites(): number[] {
@@ -194,8 +178,4 @@ export function saveFavorites(favorites: number[]): void {
   } catch {
     // Silent fail
   }
-}
-
-export function getMileageLabel(value: string): string {
-  return MILEAGE_RANGES.find(m => m.value === value)?.label || value
 }

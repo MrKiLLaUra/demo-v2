@@ -9,7 +9,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { CarCard } from "@/components/car-card"
 import { 
   Car, fmt, MAKES, FUELS, TRANSMISSIONS, MILEAGE_RANGES, PRICE_RANGES, YEARS,
-  mileageInRange, priceInRange, SortOption, sortCars, getMileageLabel
+  mileageInRange, priceInRange, SortOption, sortCars
 } from "@/lib/car-data"
 import { 
   Search, SlidersHorizontal, ArrowUpDown, X, ChevronLeft, Calendar,
@@ -18,6 +18,40 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { AnimatePresence, motion } from "framer-motion"
+
+function SafeImage({
+  src,
+  alt,
+  className,
+  fallbackSize = "md",
+  onClick,
+}: {
+  src: string
+  alt: string
+  className?: string
+  fallbackSize?: "sm" | "md" | "lg"
+  onClick?: () => void
+}) {
+  const [errored, setErrored] = useState(false)
+  const iconSize = fallbackSize === "lg" ? "w-24 h-24" : fallbackSize === "sm" ? "w-8 h-8" : "w-12 h-12"
+  if (!src || errored) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-secondary">
+        <CarIcon className={cn(iconSize, "text-muted-foreground/30")} />
+      </div>
+    )
+  }
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      className={className}
+      onError={() => setErrored(true)}
+      onClick={onClick}
+    />
+  )
+}
 
 interface InventoryPageProps {
   inventory: Car[]
@@ -67,14 +101,15 @@ export function InventoryPage({
   const [selectedCar, setSelectedCar] = useState<Car | null>(null)
   const [detailVisible, setDetailVisible] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
+  const [isZoomed, setIsZoomed] = useState(false)
   const detailGalleryEntries = selectedCar
     ? [
-        { key: "front", label: "Front", src: selectedCar.images.front },
-        { key: "side", label: "Side", src: selectedCar.images.side },
-        { key: "back", label: "Back", src: selectedCar.images.back },
-        { key: "interior", label: "Interior", src: selectedCar.images.interior },
-        { key: "frontSeats", label: "Seats", src: selectedCar.images.frontSeats },
-        { key: "rearSeats", label: "Rear Seats", src: selectedCar.images.rearSeats },
+        { key: "front",     label: "Front",      src: selectedCar.images?.front },
+        { key: "side",      label: "Side",       src: selectedCar.images?.side },
+        { key: "back",      label: "Back",       src: selectedCar.images?.back },
+        { key: "interior",  label: "Interior",   src: selectedCar.images?.interior },
+        { key: "frontSeats",label: "Seats",      src: selectedCar.images?.frontSeats },
+        { key: "rearSeats", label: "Rear Seats", src: selectedCar.images?.rearSeats },
       ]
     : []
   const [activeGalleryImage, setActiveGalleryImage] = useState<keyof Car["images"]>("front")
@@ -99,7 +134,7 @@ export function InventoryPage({
       if (filters.year && c.year !== Number(filters.year)) return false
       if (filters.fuel && c.fuel !== filters.fuel) return false
       if (filters.transmission && c.transmission !== filters.transmission) return false
-      if (filters.mileage && !mileageInRange(c.mileageRange, filters.mileage)) return false
+      if (filters.mileage && !mileageInRange(c.mileage, filters.mileage)) return false
       if (filters.price && c.showPrice && !priceInRange(c.price, filters.price)) return false
       return true
     })
@@ -125,6 +160,13 @@ export function InventoryPage({
   useEffect(() => {
     if (!selectedCar) setDetailVisible(false)
   }, [selectedCar])
+
+  useEffect(() => {
+    if (!isZoomed) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setIsZoomed(false) }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [isZoomed])
 
   const hasActiveFilters = Object.values(filters).some(v => v !== "")
 
@@ -217,6 +259,7 @@ export function InventoryPage({
   // Car detail view
   if (selectedCar) {
     return (
+      <>
       <motion.div
         className="max-w-[1100px] mx-auto py-12 px-6"
         initial={{ opacity: 0, scale: 0.95 }}
@@ -240,34 +283,22 @@ export function InventoryPage({
           <div>
             <div className="border border-border bg-card h-60 md:h-72 flex items-center justify-center mb-5 relative overflow-hidden">
               <AnimatePresence mode="wait">
-                {selectedCar.images[activeGalleryImage] ? (
-                  <motion.div
-                    key={selectedCar.images[activeGalleryImage]}
-                    className="absolute inset-0"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2, ease: "easeInOut" }}
-                  >
-                    <Image
-                      src={selectedCar.images[activeGalleryImage]}
-                      alt={`${selectedCar.year} ${selectedCar.make} ${selectedCar.model}`}
-                      fill
-                      className="object-cover"
-                    />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="gallery-fallback"
-                    className="w-full h-full flex items-center justify-center"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2, ease: "easeInOut" }}
-                  >
-                    <CarIcon className="w-24 h-24 text-muted-foreground/30" />
-                  </motion.div>
-                )}
+                <motion.div
+                  key={selectedCar.images?.[activeGalleryImage] || "gallery-fallback"}
+                  className="absolute inset-0"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2, ease: "easeInOut" }}
+                >
+                  <SafeImage
+                    src={selectedCar.images?.[activeGalleryImage] ?? ""}
+                    alt={`${selectedCar.year} ${selectedCar.make} ${selectedCar.model}`}
+                    className="object-cover cursor-pointer"
+                    fallbackSize="lg"
+                    onClick={() => setIsZoomed(true)}
+                  />
+                </motion.div>
               </AnimatePresence>
               <div className="absolute top-4 right-4">
                 {selectedCar.showPrice ? (
@@ -320,18 +351,12 @@ export function InventoryPage({
                   )}
                 >
                   <div className="relative h-28">
-                    {image.src ? (
-                      <Image
-                        src={image.src}
-                        alt={`${selectedCar.year} ${selectedCar.make} ${selectedCar.model} ${image.label}`}
-                        fill
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-secondary">
-                        <CarIcon className="w-8 h-8 text-muted-foreground/30" />
-                      </div>
-                    )}
+                    <SafeImage
+                      src={image.src ?? ""}
+                      alt={`${selectedCar.year} ${selectedCar.make} ${selectedCar.model} ${image.label}`}
+                      className="object-cover"
+                      fallbackSize="sm"
+                    />
                   </div>
                   <div className="px-2.5 py-2 text-[10px] tracking-[0.15em] uppercase text-muted-foreground border-t border-border">
                     {image.label}
@@ -347,8 +372,8 @@ export function InventoryPage({
               {selectedCar.make}<br />{selectedCar.model}
             </h1>
             <div className="flex flex-wrap gap-2 mb-5">
-              {[selectedCar.fuel, selectedCar.transmission, getMileageLabel(selectedCar.mileageRange)].map(t => (
-                <span key={t} className="text-xs text-muted-foreground border border-border px-3 py-1.5 tracking-wide">
+              {[selectedCar.fuel, selectedCar.transmission, `${selectedCar.mileage.toLocaleString()} km`].map((t, index) => (
+                <span key={index} className="text-xs text-muted-foreground border border-border px-3 py-1.5 tracking-wide">
                   {t}
                 </span>
               ))}
@@ -365,7 +390,7 @@ export function InventoryPage({
               <div className="text-[10px] text-primary tracking-[0.2em] mb-3">SAMBI AI SAYS</div>
               <p className="text-muted-foreground leading-relaxed">
                 This {selectedCar.year} {selectedCar.make} {selectedCar.model} is a {selectedCar.condition.toLowerCase()} condition vehicle 
-                with {getMileageLabel(selectedCar.mileageRange).toLowerCase()} on the odometer. 
+                with {selectedCar.mileage.toLocaleString()} km on the odometer. 
                 {selectedCar.showPrice && selectedCar.price && ` Priced at ${fmt(selectedCar.price)}, it offers solid value in its class.`}
                 {" Perfect for those seeking reliability and style."}
               </p>
@@ -391,6 +416,46 @@ export function InventoryPage({
           </div>
         </div>
       </motion.div>
+
+      {/* Lightbox overlay */}
+      <AnimatePresence>
+        {isZoomed && selectedCar.images?.[activeGalleryImage] && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setIsZoomed(false)}
+          >
+            <motion.div
+              className="relative w-full max-w-5xl mx-4 aspect-video"
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Image
+                src={selectedCar.images[activeGalleryImage]}
+                alt={`${selectedCar.year} ${selectedCar.make} ${selectedCar.model}`}
+                fill
+                className="object-contain"
+                sizes="100vw"
+              />
+            </motion.div>
+
+            <button
+              onClick={() => setIsZoomed(false)}
+              className="absolute top-5 right-5 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white"
+              aria-label="Close"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      </>
     )
   }
 

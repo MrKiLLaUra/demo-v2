@@ -1,9 +1,10 @@
 "use client"
 
+import { useState } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Heart, GitCompare, Car as CarIcon } from "lucide-react"
-import { Car, fmt, getMileageLabel } from "@/lib/car-data"
+import { Car, fmt } from "@/lib/car-data"
 import { cn } from "@/lib/utils"
 
 interface CarCardProps {
@@ -16,6 +17,26 @@ interface CarCardProps {
   compareDisabled?: boolean
 }
 
+function PreviewImage({ src, alt }: { src: string; alt: string }) {
+  const [errored, setErrored] = useState(false)
+  if (!src || errored) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <CarIcon className="w-16 h-16 text-muted-foreground/30" />
+      </div>
+    )
+  }
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      className="object-cover transition-transform duration-500 group-hover:scale-105"
+      onError={() => setErrored(true)}
+    />
+  )
+}
+
 export function CarCard({ 
   car, 
   onClick, 
@@ -25,7 +46,7 @@ export function CarCard({
   onToggleCompare,
   compareDisabled = false
 }: CarCardProps) {
-  const ml = getMileageLabel(car.mileageRange)
+  const ml = `${car.mileage.toLocaleString()} km`
 
   return (
     <div 
@@ -33,18 +54,10 @@ export function CarCard({
     >
       {/* Image */}
       <div className="relative h-40 md:h-44 bg-secondary overflow-hidden" onClick={onClick}>
-        {car.images.preview ? (
-          <Image
-            src={car.images.preview}
-            alt={`${car.year} ${car.make} ${car.model}`}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <CarIcon className="w-16 h-16 text-muted-foreground/30" />
-          </div>
-        )}
+        <PreviewImage
+          src={car.images?.preview ?? ""}
+          alt={`${car.year} ${car.make} ${car.model}`}
+        />
         
         {/* Price badge */}
         <div className="absolute top-3 right-3">
@@ -107,9 +120,9 @@ export function CarCard({
           {car.make} {car.model}
         </h3>
         <div className="flex flex-wrap gap-1.5">
-          {[car.fuel, car.transmission, ml].map(t => (
+          {[car.fuel, car.transmission, ml].filter(Boolean).map((t, index) => (
             <span 
-              key={t} 
+              key={index} 
               className="text-[10px] text-muted-foreground border border-border px-2 py-1 tracking-wide"
             >
               {t}
