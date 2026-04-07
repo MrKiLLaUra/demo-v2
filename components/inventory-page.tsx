@@ -399,14 +399,15 @@ export function InventoryPage({
             </div>
 
             <Button 
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-display tracking-widest py-6 text-base"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-display tracking-widest py-6 text-base disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={selectedCar.status?.toLowerCase() === "sold"}
               onClick={() => {
                 setBookingCar(selectedCar)
                 setSelectedCar(null)
                 setDetailVisible(false)
               }}
             >
-              BOOK A TEST DRIVE
+              {selectedCar.status?.toLowerCase() === "sold" ? "VEHICLE SOLD" : "BOOK A TEST DRIVE"}
             </Button>
 
             {!selectedCar.showPrice && (

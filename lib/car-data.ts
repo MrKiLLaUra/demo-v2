@@ -13,6 +13,7 @@ export interface Car {
   condition: string
   color: string
   description: string
+  status?: string
   images: {
     preview: string
     front: string
@@ -157,6 +158,7 @@ export async function fetchCars(): Promise<Car[]> {
     condition:    row.condition    as string,
     color:        row.color        as string,
     description:  row.description  as string,
+    status:       (row.status as string | null) ?? undefined,
     images:       buildImageUrls(row.images),
   }))
 }
