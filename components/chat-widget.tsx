@@ -42,11 +42,24 @@ export function ChatWidget() {
         body: JSON.stringify({ messages: nextMessages }),
       })
 
+      const data = (await response.json()) as { reply?: string; error?: string }
+
       if (!response.ok) {
-        throw new Error('Failed to get response from AI concierge.')
+        if (response.status === 429) {
+          setMessages((prev) => [
+            ...prev,
+            {
+              role: 'assistant',
+              content:
+                data.error ??
+                'Whoa there! Sambi AI is taking a quick breather to prevent spam. Please try again in a minute.',
+            },
+          ])
+          return
+        }
+        throw new Error(data.error ?? 'Failed to get response from AI concierge.')
       }
 
-      const data = (await response.json()) as { reply?: string }
       const reply = data.reply?.trim()
       if (!reply) {
         throw new Error('No reply returned from AI concierge.')

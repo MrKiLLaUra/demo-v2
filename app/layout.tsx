@@ -16,26 +16,37 @@ const barlow = Barlow({
   variable: '--font-barlow'
 });
 
+const siteName = 'Sambi Top Gear Motors'
+const siteDescription = 'Premium used car dealership in Limassol, Cyprus. Hand-picked vehicles, transparent pricing, and AI-powered search.'
+const siteUrl = 'https://sambitopgearmotors.com'
+
 export const metadata: Metadata = {
-  title: 'Sambi Top Gear Motors | Premium Used Cars in Limassol, Cyprus',
-  description: 'Sambi Top Gear Motors — premium used car dealership in Limassol, Cyprus. Quality vehicles, transparent pricing, and AI-powered search.',
-  generator: 'v0.app',
-  icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-    apple: '/apple-icon.png',
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: `${siteName} | Premium Used Cars in Limassol, Cyprus`,
+    template: `%s | ${siteName}`,
+  },
+  description: siteDescription,
+  keywords: ['used cars', 'cars for sale', 'Limassol', 'Cyprus', 'car dealership', 'premium cars', 'Sambi Top Gear Motors'],
+  authors: [{ name: siteName, url: siteUrl }],
+  creator: siteName,
+  openGraph: {
+    type: 'website',
+    locale: 'en_CY',
+    url: siteUrl,
+    siteName,
+    title: `${siteName} | Premium Used Cars in Limassol, Cyprus`,
+    description: siteDescription,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${siteName} | Premium Used Cars in Limassol`,
+    description: siteDescription,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
   },
 }
 

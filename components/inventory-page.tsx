@@ -55,6 +55,7 @@ function SafeImage({
 
 interface InventoryPageProps {
   inventory: Car[]
+  isLoading?: boolean
   favorites: number[]
   toggleFavorite: (id: number) => void
   compareList: number[]
@@ -82,7 +83,8 @@ const defaultFilters: Filters = {
 }
 
 export function InventoryPage({ 
-  inventory, 
+  inventory,
+  isLoading = false,
   favorites, 
   toggleFavorite,
   compareList,
@@ -552,9 +554,26 @@ export function InventoryPage({
             </Select>
           </motion.div>
 
-          {results.length > 0 ? (
+          {isLoading ? (
+            <div className="grid sm:grid-cols-2 gap-4">
+              {[0, 1, 2, 3].map((i) => (
+                <div key={i} className="border border-border bg-card overflow-hidden">
+                  <div className="h-40 md:h-44 bg-border/20 animate-pulse" />
+                  <div className="p-4 md:p-5 flex flex-col gap-3">
+                    <div className="w-24 h-2.5 bg-border/30 animate-pulse rounded" />
+                    <div className="w-40 h-6 bg-border/40 animate-pulse rounded" />
+                    <div className="flex gap-1.5">
+                      <div className="w-14 h-5 bg-border/25 animate-pulse rounded" />
+                      <div className="w-20 h-5 bg-border/25 animate-pulse rounded" />
+                      <div className="w-24 h-5 bg-border/25 animate-pulse rounded" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : results.length > 0 ? (
             <div className="grid sm:grid-cols-2 gap-4 animate-in fade-in duration-300">
-              {results.map(car => (
+              {results.map((car, index) => (
                 <CarCard 
                   key={car.id} 
                   car={car} 
@@ -567,6 +586,7 @@ export function InventoryPage({
                   isComparing={compareList.includes(car.id)}
                   onToggleCompare={() => toggleCompare(car.id)}
                   compareDisabled={compareList.length >= 3 && !compareList.includes(car.id)}
+                  priority={index < 2}
                 />
               ))}
             </div>

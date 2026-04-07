@@ -17,6 +17,7 @@ import { Car, Page, fetchCars, loadFavorites, saveFavorites } from "@/lib/car-da
 export default function App() {
   const [page, setPage] = useState<Page>("home")
   const [inventory, setInventory] = useState<Car[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [favorites, setFavorites] = useState<number[]>([])
   const [compareList, setCompareList] = useState<number[]>([])
   const [showCompare, setShowCompare] = useState(false)
@@ -24,8 +25,12 @@ export default function App() {
 
   useEffect(() => {
     const initInventory = async () => {
-      const inv = await fetchCars()
-      setInventory(inv)
+      try {
+        const inv = await fetchCars()
+        setInventory(inv)
+      } finally {
+        setIsLoading(false)
+      }
     }
 
     void initInventory()
@@ -70,6 +75,7 @@ export default function App() {
           <HomePage 
             setPage={setPage} 
             inventory={inventory}
+            isLoading={isLoading}
             favorites={favorites}
             toggleFavorite={toggleFavorite}
             compareList={compareList}
@@ -79,6 +85,7 @@ export default function App() {
         {page === "inventory" && (
           <InventoryPage 
             inventory={inventory}
+            isLoading={isLoading}
             favorites={favorites}
             toggleFavorite={toggleFavorite}
             compareList={compareList}

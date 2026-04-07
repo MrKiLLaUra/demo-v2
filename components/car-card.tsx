@@ -15,9 +15,20 @@ interface CarCardProps {
   isComparing?: boolean
   onToggleCompare?: () => void
   compareDisabled?: boolean
+  priority?: boolean
 }
 
-function PreviewImage({ src, alt }: { src: string; alt: string }) {
+function PreviewImage({
+  src,
+  alt,
+  priority = false,
+  sizes = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw",
+}: {
+  src: string
+  alt: string
+  priority?: boolean
+  sizes?: string
+}) {
   const [errored, setErrored] = useState(false)
   if (!src || errored) {
     return (
@@ -31,6 +42,8 @@ function PreviewImage({ src, alt }: { src: string; alt: string }) {
       src={src}
       alt={alt}
       fill
+      priority={priority}
+      sizes={sizes}
       className="object-cover transition-transform duration-500 group-hover:scale-105"
       onError={() => setErrored(true)}
     />
@@ -44,7 +57,8 @@ export function CarCard({
   onToggleFavorite,
   isComparing = false,
   onToggleCompare,
-  compareDisabled = false
+  compareDisabled = false,
+  priority = false,
 }: CarCardProps) {
   const ml = `${car.mileage.toLocaleString()} km`
 
@@ -57,6 +71,7 @@ export function CarCard({
         <PreviewImage
           src={car.images?.preview ?? ""}
           alt={`${car.year} ${car.make} ${car.model}`}
+          priority={priority}
         />
         
         {/* Price badge */}

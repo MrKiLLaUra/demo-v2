@@ -9,15 +9,34 @@ import { motion } from "framer-motion"
 interface HomePageProps {
   setPage: (page: Page) => void
   inventory: Car[]
+  isLoading?: boolean
   favorites: number[]
   toggleFavorite: (id: number) => void
   compareList: number[]
   toggleCompare: (id: number) => void
 }
 
+function CarCardSkeleton() {
+  return (
+    <div className="border border-border bg-card overflow-hidden">
+      <div className="h-40 md:h-44 bg-border/20 animate-pulse" />
+      <div className="p-4 md:p-5 flex flex-col gap-3">
+        <div className="w-24 h-2.5 bg-border/30 animate-pulse rounded" />
+        <div className="w-40 h-6 bg-border/40 animate-pulse rounded" />
+        <div className="flex gap-1.5">
+          <div className="w-14 h-5 bg-border/25 animate-pulse rounded" />
+          <div className="w-20 h-5 bg-border/25 animate-pulse rounded" />
+          <div className="w-24 h-5 bg-border/25 animate-pulse rounded" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export function HomePage({ 
   setPage, 
-  inventory, 
+  inventory,
+  isLoading = false,
   favorites, 
   toggleFavorite,
   compareList,
@@ -157,19 +176,26 @@ export function HomePage({
             whileInView="whileInView"
             viewport={{ once: true }}
           >
-            {featured.map(car => (
-              <motion.div key={car.id} variants={staggerItem}>
-                <CarCard 
-                  car={car} 
-                  onClick={() => setPage("inventory")}
-                  isFavorite={favorites.includes(car.id)}
-                  onToggleFavorite={() => toggleFavorite(car.id)}
-                  isComparing={compareList.includes(car.id)}
-                  onToggleCompare={() => toggleCompare(car.id)}
-                  compareDisabled={compareList.length >= 3 && !compareList.includes(car.id)}
-                />
-              </motion.div>
-            ))}
+            {isLoading
+              ? [0, 1, 2].map((i) => (
+                  <motion.div key={i} variants={staggerItem}>
+                    <CarCardSkeleton />
+                  </motion.div>
+                ))
+              : featured.map((car, index) => (
+                  <motion.div key={car.id} variants={staggerItem}>
+                    <CarCard 
+                      car={car} 
+                      onClick={() => setPage("inventory")}
+                      isFavorite={favorites.includes(car.id)}
+                      onToggleFavorite={() => toggleFavorite(car.id)}
+                      isComparing={compareList.includes(car.id)}
+                      onToggleCompare={() => toggleCompare(car.id)}
+                      compareDisabled={compareList.length >= 3 && !compareList.includes(car.id)}
+                      priority={index < 2}
+                    />
+                  </motion.div>
+                ))}
           </motion.div>
         </div>
       </motion.section>
