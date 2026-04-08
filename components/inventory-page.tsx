@@ -391,33 +391,33 @@ export function InventoryPage({
 
           {/* Right column - Actions */}
           <div className="flex flex-col gap-4">
-            <div className="border border-border p-5 md:p-6 bg-primary/[0.02] relative flex-1">
-              <div className="absolute top-0 left-6 w-10 h-0.5 bg-primary -translate-y-px" />
-              <div className="text-[10px] text-primary tracking-[0.2em] mb-3">SAMBI AI SAYS</div>
-              <p className="text-muted-foreground leading-relaxed">
-                This {selectedCar.year} {selectedCar.make} {selectedCar.model} is a {selectedCar.condition.toLowerCase()} condition vehicle 
-                with {selectedCar.mileage.toLocaleString()} km on the odometer. 
-                {priceVisible && ` Priced at ${fmt(selectedCar.price!)}, it offers solid value in its class.`}
-                {" Perfect for those seeking reliability and style."}
-              </p>
-            </div>
+            {selectedCar.ai_blurb && (
+              <div className="border border-border p-5 md:p-6 bg-primary/[0.02] relative flex-1">
+                <div className="absolute top-0 left-6 w-10 h-0.5 bg-primary -translate-y-px" />
+                <div className="text-[10px] text-primary tracking-[0.2em] mb-3">SAMBI AI SAYS</div>
+                <p className="text-muted-foreground leading-relaxed">{selectedCar.ai_blurb}</p>
+              </div>
+            )}
 
-            <Button
-              className={cn(
-                "w-full font-display tracking-widest py-6 text-base",
-                isSold
-                  ? "bg-zinc-800 text-zinc-500 cursor-not-allowed hover:bg-zinc-800"
-                  : "bg-primary hover:bg-primary/90 text-primary-foreground"
-              )}
-              disabled={isSold}
-              onClick={() => {
-                setBookingCar(selectedCar)
-                setSelectedCar(null)
-                setDetailVisible(false)
-              }}
-            >
-              {isSold ? "VEHICLE SOLD" : "BOOK A TEST DRIVE"}
-            </Button>
+            {isSold ? (
+              <Button
+                className="w-full font-display tracking-widest py-6 text-base bg-zinc-800 text-zinc-500 cursor-not-allowed hover:bg-zinc-800"
+                disabled
+              >
+                VEHICLE SOLD
+              </Button>
+            ) : (
+              <a
+                href={`https://wa.me/35799929323?text=${encodeURIComponent(`Hey Kosmas, I am interested in the ${selectedCar.year} ${selectedCar.make} ${selectedCar.model}. Is it available for a test drive?`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full"
+              >
+                <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-display tracking-widest py-6 text-base">
+                  BOOK A TEST DRIVE
+                </Button>
+              </a>
+            )}
 
             {!priceVisible && (
               <div className="border border-border p-5 bg-card">

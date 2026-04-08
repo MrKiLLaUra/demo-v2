@@ -64,11 +64,18 @@ export async function POST(request: NextRequest) {
     const inventoryForPrompt = cars
       .map((car) => {
         const price = car.showPrice && car.price !== null ? `EUR ${car.price.toLocaleString('en-US')}` : 'Price on request'
-        return `- ${car.year} ${car.make} ${car.model} | Fuel: ${car.fuel} | Transmission: ${car.transmission} | Mileage: ${car.mileage.toLocaleString()} km | Color: ${car.color} | Condition: ${car.condition} | Price: ${price} | Description: ${car.description}`
+        const status = (car.status || (car as Record<string, unknown>).Status as string | undefined)?.toLowerCase().trim() === 'sold' ? 'SOLD' : 'Available'
+        return `- ${car.year} ${car.make} ${car.model} | Status: ${status} | Fuel: ${car.fuel} | Transmission: ${car.transmission} | Mileage: ${car.mileage.toLocaleString()} km | Color: ${car.color} | Condition: ${car.condition} | Price: ${price} | Description: ${car.description}`
       })
       .join('\n')
 
-    const systemPrompt = `You are the elite AI concierge for Sambi Top Gear Motors in Limassol. You help users find cars in our inventory and book test drives. Use only the inventory provided below when discussing currently available cars. If a user asks for a car we don't have, politely explain we are actively sourcing cars and ask for their phone number so Kosmas can find it for them.
+    const systemPrompt = `You are the elite AI concierge for Sambi Top Gear Motors in Limassol. You help users find cars in our inventory and book test drives. Use only the inventory provided below when discussing currently available cars. If a user asks for a car we don't have, politely explain we are actively sourcing cars and direct them to click the red BOOK A TEST DRIVE button to speak with Kosmas directly on WhatsApp.
+
+RULE 1 - PLAIN TEXT ONLY: You must never use markdown formatting of any kind. Do not use asterisks for bold or italic (no ** or *), no headers with #, no bullet points with -, no backticks. Write in plain, natural sentences only.
+
+RULE 2 - SOLD AWARENESS: Every car in the inventory below has a Status field. If a user asks about a specific car whose Status is SOLD, you must clearly tell them that this particular vehicle has already been sold and is no longer available for a test drive. Then offer to help them find a similar available vehicle from the inventory, or direct them to click the red BOOK A TEST DRIVE button to speak with Kosmas on WhatsApp about sourcing one.
+
+RULE 3 - BOOKING TEST DRIVES: You must never ask the user for their phone number or any contact information. You do not have the ability to save leads or send messages. If a user wants to book a test drive or get in touch, enthusiastically tell them to click the red BOOK A TEST DRIVE button located directly below the car details, which will connect them instantly with our specialist Kosmas on WhatsApp.
 
 Current inventory:
 ${inventoryForPrompt}`
