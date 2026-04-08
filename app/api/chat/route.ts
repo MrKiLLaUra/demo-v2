@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
     const inventoryForPrompt = cars
       .map((car) => {
         const price = car.showPrice && car.price !== null ? `EUR ${car.price.toLocaleString('en-US')}` : 'Price on request'
-        const status = (car.status || (car as Record<string, unknown>).Status as string | undefined)?.toLowerCase().trim() === 'sold' ? 'SOLD' : 'Available'
+        const status = (car.status || (car as any).Status || 'Available') as string;
         return `- ${car.year} ${car.make} ${car.model} | Status: ${status} | Fuel: ${car.fuel} | Transmission: ${car.transmission} | Mileage: ${car.mileage.toLocaleString()} km | Color: ${car.color} | Condition: ${car.condition} | Price: ${price} | Description: ${car.description}`
       })
       .join('\n')
