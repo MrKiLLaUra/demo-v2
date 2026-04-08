@@ -9,7 +9,7 @@ export interface Car {
   fuel: string
   transmission: string
   price: number | null
-  showPrice: boolean
+  showPrice?: boolean
   condition: string
   color: string
   description: string
@@ -154,11 +154,11 @@ export async function fetchCars(): Promise<Car[]> {
     fuel:         row.fuel         as string,
     transmission: row.transmission as string,
     price:        row.price        as number | null,
-    showPrice:    row.show_price   as boolean,
+    showPrice:    (row.show_price ?? row.showPrice ?? false) as boolean,
     condition:    row.condition    as string,
     color:        row.color        as string,
     description:  row.description  as string,
-    status:       (row.status as string | null) ?? undefined,
+    status:       ((row.status || row.Status) as string | null) ?? undefined,
     images:       buildImageUrls(row.images),
   }))
 }

@@ -61,6 +61,8 @@ export function CarCard({
   priority = false,
 }: CarCardProps) {
   const ml = `${car.mileage.toLocaleString()} km`
+  const isSold = car.status?.toLowerCase().trim() === "sold"
+  const priceVisible = car.showPrice === true && car.price !== null
 
   return (
     <div 
@@ -74,17 +76,17 @@ export function CarCard({
           priority={priority}
         />
 
-        {car.status?.toLowerCase() === "sold" && (
+        {isSold && (
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center pointer-events-none">
             <span className="rotate-[-30deg] font-display text-4xl tracking-[0.18em] text-primary drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] select-none border-2 border-primary/70 px-4 py-1 bg-black/60 backdrop-blur-sm">
               SOLD
             </span>
           </div>
         )}
-        
+
         {/* Price badge */}
         <div className="absolute top-3 right-3">
-          {car.showPrice ? (
+          {priceVisible ? (
             <div className="bg-primary text-primary-foreground px-3 py-1.5 font-display text-base tracking-wide">
               {fmt(car.price!)}
             </div>

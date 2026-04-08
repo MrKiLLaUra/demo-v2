@@ -27,6 +27,7 @@ export default function App() {
     const initInventory = async () => {
       try {
         const inv = await fetchCars()
+        console.log('RAW SUPABASE DATA:', inv)
         setInventory(inv)
       } finally {
         setIsLoading(false)

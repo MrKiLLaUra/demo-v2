@@ -156,6 +156,7 @@ export function InventoryPage({
   useEffect(() => {
     if (selectedCar) {
       setActiveGalleryImage("front")
+      console.log('CURRENT CAR DATA:', selectedCar)
     }
   }, [selectedCar])
 
@@ -260,6 +261,9 @@ export function InventoryPage({
 
   // Car detail view
   if (selectedCar) {
+    const isSold = selectedCar.status?.toLowerCase().trim() === "sold"
+    const priceVisible = selectedCar.showPrice === true && selectedCar.price !== null
+
     return (
       <>
       <motion.div
@@ -303,7 +307,7 @@ export function InventoryPage({
                 </motion.div>
               </AnimatePresence>
               <div className="absolute top-4 right-4">
-                {selectedCar.showPrice ? (
+                {priceVisible ? (
                   <div className="bg-primary text-primary-foreground px-4 py-2 font-display text-xl tracking-wide">
                     {fmt(selectedCar.price!)}
                   </div>
@@ -393,24 +397,29 @@ export function InventoryPage({
               <p className="text-muted-foreground leading-relaxed">
                 This {selectedCar.year} {selectedCar.make} {selectedCar.model} is a {selectedCar.condition.toLowerCase()} condition vehicle 
                 with {selectedCar.mileage.toLocaleString()} km on the odometer. 
-                {selectedCar.showPrice && selectedCar.price && ` Priced at ${fmt(selectedCar.price)}, it offers solid value in its class.`}
+                {priceVisible && ` Priced at ${fmt(selectedCar.price!)}, it offers solid value in its class.`}
                 {" Perfect for those seeking reliability and style."}
               </p>
             </div>
 
-            <Button 
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-display tracking-widest py-6 text-base disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={selectedCar.status?.toLowerCase() === "sold"}
+            <Button
+              className={cn(
+                "w-full font-display tracking-widest py-6 text-base",
+                isSold
+                  ? "bg-zinc-800 text-zinc-500 cursor-not-allowed hover:bg-zinc-800"
+                  : "bg-primary hover:bg-primary/90 text-primary-foreground"
+              )}
+              disabled={isSold}
               onClick={() => {
                 setBookingCar(selectedCar)
                 setSelectedCar(null)
                 setDetailVisible(false)
               }}
             >
-              {selectedCar.status?.toLowerCase() === "sold" ? "VEHICLE SOLD" : "BOOK A TEST DRIVE"}
+              {isSold ? "VEHICLE SOLD" : "BOOK A TEST DRIVE"}
             </Button>
 
-            {!selectedCar.showPrice && (
+            {!priceVisible && (
               <div className="border border-border p-5 bg-card">
                 <p className="text-sm text-muted-foreground mb-2">Interested in the price?</p>
                 <p className="text-xl text-primary font-semibold">+357 99 000 000</p>
