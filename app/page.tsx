@@ -14,14 +14,35 @@ import { CompareDrawer } from "@/components/compare-drawer"
 import { FavoritesDrawer } from "@/components/favorites-drawer"
 import { Car, Page, fetchCars, loadFavorites, saveFavorites } from "@/lib/car-data"
 
+const VALID_PAGES: Page[] = ["home", "inventory", "services", "about", "contact"]
+
+function getPageFromHash(): Page {
+  if (typeof window === "undefined") return "home"
+  const hash = window.location.hash.replace("#", "") as Page
+  return VALID_PAGES.includes(hash) ? hash : "home"
+}
+
 export default function App() {
-  const [page, setPage] = useState<Page>("home")
+  const [page, setPageState] = useState<Page>("home")
   const [inventory, setInventory] = useState<Car[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [favorites, setFavorites] = useState<number[]>([])
   const [compareList, setCompareList] = useState<number[]>([])
   const [showCompare, setShowCompare] = useState(false)
   const [showFavorites, setShowFavorites] = useState(false)
+
+  // Read hash on first render and whenever the user hits back/forward
+  useEffect(() => {
+    setPageState(getPageFromHash())
+    const onHashChange = () => setPageState(getPageFromHash())
+    window.addEventListener("hashchange", onHashChange)
+    return () => window.removeEventListener("hashchange", onHashChange)
+  }, [])
+
+  const setPage = (p: Page) => {
+    window.location.hash = p === "home" ? "" : p
+    setPageState(p)
+  }
 
   useEffect(() => {
     const initInventory = async () => {

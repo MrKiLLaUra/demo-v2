@@ -24,12 +24,14 @@ function SafeImage({
   alt,
   className,
   fallbackSize = "md",
+  sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
   onClick,
 }: {
   src: string
   alt: string
   className?: string
   fallbackSize?: "sm" | "md" | "lg"
+  sizes?: string
   onClick?: () => void
 }) {
   const [errored, setErrored] = useState(false)
@@ -46,6 +48,7 @@ function SafeImage({
       src={src}
       alt={alt}
       fill
+      sizes={sizes}
       className={className}
       onError={() => setErrored(true)}
       onClick={onClick}
