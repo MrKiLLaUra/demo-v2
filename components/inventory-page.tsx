@@ -19,12 +19,16 @@ import {
 import { cn } from "@/lib/utils"
 import { AnimatePresence, motion } from "framer-motion"
 
+// Tiny gray JPEG used as an instant blur placeholder while images load
+const BLUR_PLACEHOLDER = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/wAARCAABAAEDASIAAhEBAxEB/8QAFAABAAAAAAAAAAAAAAAAAAAACf/EABQQAQAAAAAAAAAAAAAAAAAAAAD/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8AJQAB/9k="
+
 function SafeImage({
   src,
   alt,
   className,
   fallbackSize = "md",
   sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
+  quality = 70,
   onClick,
 }: {
   src: string
@@ -32,6 +36,7 @@ function SafeImage({
   className?: string
   fallbackSize?: "sm" | "md" | "lg"
   sizes?: string
+  quality?: number
   onClick?: () => void
 }) {
   const [errored, setErrored] = useState(false)
@@ -49,6 +54,9 @@ function SafeImage({
       alt={alt}
       fill
       sizes={sizes}
+      quality={quality}
+      placeholder="blur"
+      blurDataURL={BLUR_PLACEHOLDER}
       className={className}
       onError={() => setErrored(true)}
       onClick={onClick}
@@ -305,6 +313,8 @@ export function InventoryPage({
                     alt={`${selectedCar.year} ${selectedCar.make} ${selectedCar.model}`}
                     className="object-cover cursor-pointer"
                     fallbackSize="lg"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    quality={75}
                     onClick={() => setIsZoomed(true)}
                   />
                 </motion.div>
@@ -365,6 +375,8 @@ export function InventoryPage({
                       alt={`${selectedCar.year} ${selectedCar.make} ${selectedCar.model} ${image.label}`}
                       className="object-cover"
                       fallbackSize="sm"
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 16vw"
+                      quality={60}
                     />
                   </div>
                   <div className="px-2.5 py-2 text-[10px] tracking-[0.15em] uppercase text-muted-foreground border-t border-border">

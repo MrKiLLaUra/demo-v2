@@ -7,6 +7,9 @@ import { Heart, GitCompare, Car as CarIcon } from "lucide-react"
 import { Car, fmt } from "@/lib/car-data"
 import { cn } from "@/lib/utils"
 
+// Tiny gray JPEG used as an instant blur placeholder while images load
+const BLUR_PLACEHOLDER = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/wAARCAABAAEDASIAAhEBAxEB/8QAFAABAAAAAAAAAAAAAAAAAAAACf/EABQQAQAAAAAAAAAAAAAAAAAAAAD/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8AJQAB/9k="
+
 interface CarCardProps {
   car: Car
   onClick: () => void
@@ -22,7 +25,7 @@ function PreviewImage({
   src,
   alt,
   priority = false,
-  sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
+  sizes = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw",
 }: {
   src: string
   alt: string
@@ -44,6 +47,9 @@ function PreviewImage({
       fill
       priority={priority}
       sizes={sizes}
+      quality={65}
+      placeholder="blur"
+      blurDataURL={BLUR_PLACEHOLDER}
       className="object-cover transition-transform duration-500 group-hover:scale-105"
       onError={() => setErrored(true)}
     />
