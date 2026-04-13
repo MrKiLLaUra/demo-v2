@@ -4,19 +4,19 @@ import { User } from "lucide-react"
 
 const team = [
   { 
-    name: "Andreas Nikolaou", 
-    role: "Founder & CEO", 
-    bio: "7+ years in the automotive industry. Started Sambi Top Gear with one simple mission: make buying a used car in Cyprus actually enjoyable." 
+    name: "Kosmas Sambi", 
+    role: "CEO", 
+    bio: "5 years in the automotive industry. Has a passion for cars and a love for helping people find the perfect vehicle." 
   },
   { 
-    name: "Maria Stavrou", 
-    role: "Head of Sales", 
+    name: "Kostas Sambi", 
+    role: "Founder", 
     bio: "Knows every car on the lot better than anyone. Has matched hundreds of clients with their perfect vehicle over 7 years with Sambi Top Gear." 
   },
   { 
-    name: "Kostas Petrou", 
-    role: "Chief Inspector", 
-    bio: "Former mechanical engineer. Personally oversees every vehicle inspection before it joins our inventory." 
+    name: "Annis Sambi", 
+    role: "Sales Manager", 
+    bio: "Dedicated to making the car-buying process as smooth and enjoyable as possible. Combining market expertise with a friendly, customer-focused approach." 
   },
 ]
 
