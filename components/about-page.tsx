@@ -14,7 +14,7 @@ const team = [
     bio: "Knows every car on the lot better than anyone. Has matched hundreds of clients with their perfect vehicle over 7 years with Sambi Top Gear." 
   },
   { 
-    name: "Annis Sambi", 
+    name: "Annisa Sambi", 
     role: "Sales Manager", 
     bio: "Dedicated to making the car-buying process as smooth and enjoyable as possible. Combining market expertise with a friendly, customer-focused approach." 
   },
