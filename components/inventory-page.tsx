@@ -13,7 +13,7 @@ import {
 } from "@/lib/car-data"
 import { 
   Search, SlidersHorizontal, ArrowUpDown, X, ChevronLeft, Calendar,
-  Fuel, Settings2, Gauge, Palette, FileText, Phone, Heart, GitCompare,
+  Fuel, Settings2, Gauge, Palette, FileText, Phone, Heart,
   Car as CarIcon
 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -69,8 +69,6 @@ interface InventoryPageProps {
   isLoading?: boolean
   favorites: number[]
   toggleFavorite: (id: number) => void
-  compareList: number[]
-  toggleCompare: (id: number) => void
 }
 
 interface Filters {
@@ -98,8 +96,6 @@ export function InventoryPage({
   isLoading = false,
   favorites, 
   toggleFavorite,
-  compareList,
-  toggleCompare 
 }: InventoryPageProps) {
   const scrollReveal = {
     initial: { opacity: 0, y: 20 },
@@ -331,7 +327,7 @@ export function InventoryPage({
                 )}
               </div>
 
-              {/* Favorite & Compare buttons */}
+              {/* Favorite button */}
               <div className="absolute top-4 left-4 flex gap-2">
                 <Button
                   variant="secondary"
@@ -343,18 +339,6 @@ export function InventoryPage({
                   onClick={() => toggleFavorite(selectedCar.id)}
                 >
                   <Heart className={cn("w-4 h-4", favorites.includes(selectedCar.id) && "fill-current")} />
-                </Button>
-                <Button
-                  variant="secondary"
-                  size="icon"
-                  className={cn(
-                    "w-9 h-9 bg-background/80 backdrop-blur-sm hover:bg-background",
-                    compareList.includes(selectedCar.id) && "text-primary"
-                  )}
-                  disabled={compareList.length >= 3 && !compareList.includes(selectedCar.id)}
-                  onClick={() => toggleCompare(selectedCar.id)}
-                >
-                  <GitCompare className="w-4 h-4" />
                 </Button>
               </div>
             </div>
@@ -608,9 +592,6 @@ export function InventoryPage({
                   }}
                   isFavorite={favorites.includes(car.id)}
                   onToggleFavorite={() => toggleFavorite(car.id)}
-                  isComparing={compareList.includes(car.id)}
-                  onToggleCompare={() => toggleCompare(car.id)}
-                  compareDisabled={compareList.length >= 3 && !compareList.includes(car.id)}
                   priority={index < 2}
                 />
               ))}

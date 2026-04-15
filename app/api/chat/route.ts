@@ -49,7 +49,8 @@ export async function POST(request: NextRequest) {
         (message) =>
           (message.role === 'user' || message.role === 'assistant') &&
           typeof message.content === 'string' &&
-          message.content.trim().length > 0,
+          message.content.trim().length > 0 &&
+          message.content.length <= 2000,
       )
       .map((message) => ({
         role: message.role,

@@ -12,8 +12,6 @@ interface HomePageProps {
   isLoading?: boolean
   favorites: number[]
   toggleFavorite: (id: number) => void
-  compareList: number[]
-  toggleCompare: (id: number) => void
 }
 
 function CarCardSkeleton() {
@@ -39,8 +37,6 @@ export function HomePage({
   isLoading = false,
   favorites, 
   toggleFavorite,
-  compareList,
-  toggleCompare 
 }: HomePageProps) {
   const featured = inventory.slice(0, 3)
   const fadeInUp = {
@@ -189,9 +185,6 @@ export function HomePage({
                       onClick={() => setPage("inventory")}
                       isFavorite={favorites.includes(car.id)}
                       onToggleFavorite={() => toggleFavorite(car.id)}
-                      isComparing={compareList.includes(car.id)}
-                      onToggleCompare={() => toggleCompare(car.id)}
-                      compareDisabled={compareList.length >= 3 && !compareList.includes(car.id)}
                       priority={index < 2}
                     />
                   </motion.div>

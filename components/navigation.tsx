@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Menu, Heart, GitCompare, X } from "lucide-react"
+import { Menu, Heart, X } from "lucide-react"
 import { Page } from "@/lib/car-data"
 import { AnimatePresence, motion } from "framer-motion"
 
@@ -10,9 +10,7 @@ interface NavigationProps {
   page: Page
   setPage: (page: Page) => void
   favoritesCount: number
-  compareCount: number
   onShowFavorites: () => void
-  onShowCompare: () => void
 }
 
 const navItems: { key: Page; label: string }[] = [
@@ -61,10 +59,8 @@ const mobileMenuItemVariants = {
 export function Navigation({ 
   page, 
   setPage, 
-  favoritesCount, 
-  compareCount,
+  favoritesCount,
   onShowFavorites,
-  onShowCompare,
 }: NavigationProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   
@@ -138,20 +134,6 @@ export function Navigation({
               )}
             </Button>
             
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onShowCompare}
-              className="relative"
-            >
-              <GitCompare className="w-4 h-4" />
-              {compareCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary text-primary-foreground text-[10px] rounded-full flex items-center justify-center">
-                  {compareCount}
-                </span>
-              )}
-            </Button>
-            
             <Button 
               onClick={() => navigateWithScrollReset("inventory")}
               className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs tracking-widest px-5 ml-2"
@@ -173,20 +155,6 @@ export function Navigation({
             {favoritesCount > 0 && (
               <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary text-primary-foreground text-[10px] rounded-full flex items-center justify-center">
                 {favoritesCount}
-              </span>
-            )}
-          </Button>
-          
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onShowCompare}
-            className="relative"
-          >
-            <GitCompare className="w-4 h-4" />
-            {compareCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary text-primary-foreground text-[10px] rounded-full flex items-center justify-center">
-                {compareCount}
               </span>
             )}
           </Button>

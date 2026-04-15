@@ -10,7 +10,6 @@ import { ServicesPage } from "@/components/services-page"
 import { AboutPage } from "@/components/about-page"
 import { ContactPage } from "@/components/contact-page"
 import { Footer } from "@/components/footer"
-import { CompareDrawer } from "@/components/compare-drawer"
 import { FavoritesDrawer } from "@/components/favorites-drawer"
 import { Car, Page, fetchCars, loadFavorites, saveFavorites } from "@/lib/car-data"
 
@@ -27,8 +26,6 @@ export default function App() {
   const [inventory, setInventory] = useState<Car[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [favorites, setFavorites] = useState<number[]>([])
-  const [compareList, setCompareList] = useState<number[]>([])
-  const [showCompare, setShowCompare] = useState(false)
   const [showFavorites, setShowFavorites] = useState(false)
 
   // Read hash on first render and whenever the user hits back/forward
@@ -67,16 +64,7 @@ export default function App() {
     saveFavorites(newFavorites)
   }
 
-  const toggleCompare = (id: number) => {
-    if (compareList.includes(id)) {
-      setCompareList(compareList.filter(c => c !== id))
-    } else if (compareList.length < 3) {
-      setCompareList([...compareList, id])
-    }
-  }
-
   const favoriteCars = inventory.filter(car => favorites.includes(car.id))
-  const compareCars = inventory.filter(car => compareList.includes(car.id))
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans">
@@ -87,9 +75,7 @@ export default function App() {
         page={page} 
         setPage={setPage} 
         favoritesCount={favorites.length}
-        compareCount={compareList.length}
         onShowFavorites={() => setShowFavorites(true)}
-        onShowCompare={() => setShowCompare(true)}
       />
 
       <main id="main-content" className="relative z-10">
@@ -100,8 +86,6 @@ export default function App() {
             isLoading={isLoading}
             favorites={favorites}
             toggleFavorite={toggleFavorite}
-            compareList={compareList}
-            toggleCompare={toggleCompare}
           />
         )}
         {page === "inventory" && (
@@ -110,8 +94,6 @@ export default function App() {
             isLoading={isLoading}
             favorites={favorites}
             toggleFavorite={toggleFavorite}
-            compareList={compareList}
-            toggleCompare={toggleCompare}
           />
         )}
         {page === "services" && <ServicesPage setPage={setPage} />}
@@ -120,14 +102,6 @@ export default function App() {
       </main>
 
       <Footer setPage={setPage} />
-
-      <CompareDrawer 
-        open={showCompare}
-        onOpenChange={setShowCompare}
-        cars={compareCars}
-        onRemove={toggleCompare}
-        onClear={() => setCompareList([])}
-      />
 
       <FavoritesDrawer 
         open={showFavorites}

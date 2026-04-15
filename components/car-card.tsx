@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { Heart, GitCompare, Car as CarIcon } from "lucide-react"
+import { Heart, Car as CarIcon } from "lucide-react"
 import { Car, fmt } from "@/lib/car-data"
 import { cn } from "@/lib/utils"
 
@@ -15,9 +15,6 @@ interface CarCardProps {
   onClick: () => void
   isFavorite?: boolean
   onToggleFavorite?: () => void
-  isComparing?: boolean
-  onToggleCompare?: () => void
-  compareDisabled?: boolean
   priority?: boolean
 }
 
@@ -61,9 +58,6 @@ export function CarCard({
   onClick, 
   isFavorite = false,
   onToggleFavorite,
-  isComparing = false,
-  onToggleCompare,
-  compareDisabled = false,
   priority = false,
 }: CarCardProps) {
   const ml = `${car.mileage.toLocaleString()} km`
@@ -119,24 +113,6 @@ export function CarCard({
               }}
             >
               <Heart className={cn("w-4 h-4", isFavorite && "fill-current")} />
-            </Button>
-          )}
-          {onToggleCompare && (
-            <Button
-              variant="secondary"
-              size="icon"
-              className={cn(
-                "w-8 h-8 bg-background/80 backdrop-blur-sm hover:bg-background",
-                isComparing && "text-primary",
-                compareDisabled && "opacity-50"
-              )}
-              disabled={compareDisabled}
-              onClick={(e) => {
-                e.stopPropagation()
-                onToggleCompare()
-              }}
-            >
-              <GitCompare className="w-4 h-4" />
             </Button>
           )}
         </div>
