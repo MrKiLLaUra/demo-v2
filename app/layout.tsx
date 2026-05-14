@@ -1,20 +1,30 @@
 import type { Metadata } from 'next'
 import { Bebas_Neue, Barlow } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { SiteNav } from '@/components/site-nav'
+import { SiteFooter } from '@/components/site-footer'
+import { LenisProvider } from '@/components/lenis-provider'
+import { FavoritesProvider } from '@/components/favorites-provider'
+import { AosInit } from '@/components/aos-init'
+import { FloatingWhatsApp } from '@/components/floating-whatsapp'
 import { ChatWidget } from '@/components/chat-widget'
-import { ScrollToTop } from '@/components/scroll-to-top-on-route-change'
+import { FavoritesDrawerGlobal } from '@/components/favorites-drawer-global'
+import { Toaster } from '@/components/ui/sonner'
 import './globals.css'
 
-const bebasNeue = Bebas_Neue({ 
+const bebasNeue = Bebas_Neue({
   weight: '400',
-  subsets: ["latin"],
-  variable: '--font-bebas'
-});
-const barlow = Barlow({ 
+  subsets: ['latin'],
+  variable: '--font-bebas',
+  display: 'swap',
+})
+
+const barlow = Barlow({
   weight: ['300', '400', '500', '600', '700'],
-  subsets: ["latin"],
-  variable: '--font-barlow'
-});
+  subsets: ['latin'],
+  variable: '--font-barlow',
+  display: 'swap',
+})
 
 const siteName = 'Sambi Top Gear Motors'
 const siteDescription = 'Premium used car dealership in Limassol, Cyprus. Hand-picked vehicles, transparent pricing, and AI-powered search.'
@@ -43,24 +53,28 @@ export const metadata: Metadata = {
     title: `${siteName} | Premium Used Cars in Limassol`,
     description: siteDescription,
   },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: { index: true, follow: true },
-  },
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="dark">
-      <body className={`${bebasNeue.variable} ${barlow.variable} font-sans antialiased`}>
-        <ScrollToTop>{children}</ScrollToTop>
-        <ChatWidget />
-        <Analytics />
+      <body className={`${bebasNeue.variable} ${barlow.variable} font-sans antialiased min-h-screen flex flex-col`}>
+        <FavoritesProvider>
+          <LenisProvider>
+            <AosInit />
+            <SiteNav />
+            <main className="flex-1">
+              {children}
+            </main>
+            <SiteFooter />
+            <FloatingWhatsApp />
+            <FavoritesDrawerGlobal />
+            <ChatWidget />
+            <Toaster position="bottom-right" theme="dark" />
+            <Analytics />
+          </LenisProvider>
+        </FavoritesProvider>
       </body>
     </html>
   )

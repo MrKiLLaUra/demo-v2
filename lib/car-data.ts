@@ -143,6 +143,39 @@ function buildImageUrls(raw: unknown): Car["images"] {
   }
 }
 
+export function carSlug(car: Car): string {
+  return `${car.year}-${car.make}-${car.model}-${car.id}`
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+}
+
+export function idFromSlug(slug: string): number {
+  return parseInt(slug.split("-").at(-1) ?? "", 10)
+}
+
+export async function fetchCarById(id: number): Promise<Car | null> {
+  const { data, error } = await supabase.from("cars").select("*").eq("id", id).single()
+  if (error || !data) return null
+  return {
+    id:           data.id           as number,
+    make:         data.make         as string,
+    model:        data.model        as string,
+    year:         data.year         as number,
+    mileage:      data.mileage      as number,
+    fuel:         data.fuel         as string,
+    transmission: data.transmission as string,
+    price:        data.price        as number | null,
+    showPrice:    (data.show_price ?? data.showPrice ?? false) as boolean,
+    condition:    data.condition    as string,
+    color:        data.color        as string,
+    description:  data.description  as string,
+    status:       ((data.status || data.Status) as string | null) ?? undefined,
+    ai_blurb:     (data.ai_blurb as string | null) ?? undefined,
+    images:       buildImageUrls(data.images),
+  }
+}
+
 export async function fetchCars(): Promise<Car[]> {
   const { data, error } = await supabase.from("cars").select("*").order("id")
   if (error) throw error

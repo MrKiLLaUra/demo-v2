@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,11 +13,27 @@ import {
 } from "@/lib/car-data"
 import { 
   Search, SlidersHorizontal, ArrowUpDown, X, ChevronLeft, Calendar,
-  Fuel, Settings2, Gauge, Palette, FileText, Phone, Heart,
+  Fuel, Settings2, Gauge, Palette, FileText, Phone, Heart, Share2,
   Car as CarIcon
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { AnimatePresence, motion } from "framer-motion"
+import { CarLoadingScreen } from "@/components/car-loading-screen"
+
+const RV_KEY = "sambi_recently_viewed"
+const RV_MAX = 5
+
+function saveRecentlyViewed(id: number) {
+  try {
+    const prev: number[] = JSON.parse(localStorage.getItem(RV_KEY) ?? "[]")
+    const next = [id, ...prev.filter((x) => x !== id)].slice(0, RV_MAX)
+    localStorage.setItem(RV_KEY, JSON.stringify(next))
+  } catch {}
+}
+
+function getRecentlyViewed(): number[] {
+  try { return JSON.parse(localStorage.getItem(RV_KEY) ?? "[]") } catch { return [] }
+}
 
 // Tiny gray JPEG used as an instant blur placeholder while images load
 const BLUR_PLACEHOLDER = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/wAARCAABAAEDASIAAhEBAxEB/8QAFAABAAAAAAAAAAAAAAAAAAAACf/EABQQAQAAAAAAAAAAAAAAAAAAAAD/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8AJQAB/9k="
@@ -109,8 +125,67 @@ export function InventoryPage({
   const [sortBy, setSortBy] = useState<SortOption>("year-new")
   const [selectedCar, setSelectedCar] = useState<Car | null>(null)
   const [detailVisible, setDetailVisible] = useState(false)
+  const [loadingCar, setLoadingCar] = useState<Car | null>(null)
+  const [recentlyViewed, setRecentlyViewed] = useState<number[]>([])
+  const savedScrollY = useRef(0)
+
+  useEffect(() => { setRecentlyViewed(getRecentlyViewed()) }, [])
+
+  const handleCarOpen = useCallback(async (car: Car) => {
+    savedScrollY.current = window.scrollY
+    saveRecentlyViewed(car.id)
+    setRecentlyViewed(getRecentlyViewed())
+    setLoadingCar(car)
+
+    const imageSrcs = [
+      car.images?.front,
+      car.images?.side,
+      car.images?.preview,
+      car.images?.back,
+    ].filter(Boolean) as string[]
+
+    const minDuration = new Promise<void>((r) => setTimeout(r, 1800))
+    const loadImages = Promise.race([
+      Promise.all(
+        imageSrcs.map(
+          (src) =>
+            new Promise<void>((resolve) => {
+              const img = new window.Image()
+              img.onload = () => resolve()
+              img.onerror = () => resolve()
+              img.src = src
+            })
+        )
+      ),
+      new Promise<void>((r) => setTimeout(r, 4000)), // 4 s hard cap
+    ])
+
+    await Promise.all([minDuration, loadImages])
+
+    setLoadingCar(null)
+    // Small gap so the exit animation starts before detail mounts.
+    // Scroll to top during the fade-out so the detail view always opens at the top.
+    setTimeout(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" })
+      setSelectedCar(car)
+      setDetailVisible(true)
+    }, 320)
+  }, [])
   const [showFilters, setShowFilters] = useState(false)
   const [isZoomed, setIsZoomed] = useState(false)
+  const [copied, setCopied] = useState(false)
+
+  const handleShare = async () => {
+    const text = `Check out this ${selectedCar?.year} ${selectedCar?.make} ${selectedCar?.model} at Sambi Top Gear Motors`
+    const url = window.location.href
+    if (navigator.share) {
+      await navigator.share({ title: text, url }).catch(() => {})
+    } else {
+      await navigator.clipboard.writeText(`${text} — ${url}`)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    }
+  }
   const detailGalleryEntries = selectedCar
     ? [
         { key: "front",     label: "Front",      src: selectedCar.images?.front },
@@ -163,7 +238,9 @@ export function InventoryPage({
   useEffect(() => {
     if (selectedCar) {
       setActiveGalleryImage("front")
-      console.log('CURRENT CAR DATA:', selectedCar)
+      document.title = `${selectedCar.year} ${selectedCar.make} ${selectedCar.model} | Sambi Top Gear Motors`
+    } else {
+      document.title = "Inventory | Sambi Top Gear Motors"
     }
   }, [selectedCar])
 
@@ -279,7 +356,13 @@ export function InventoryPage({
         animate={detailVisible ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
         transition={{ duration: 0.24, ease: "easeOut" }}
         onAnimationComplete={() => {
-          if (!detailVisible) setSelectedCar(null)
+          if (!detailVisible) {
+            setSelectedCar(null)
+            // Restore the scroll position the user was at before opening
+            requestAnimationFrame(() => {
+              window.scrollTo({ top: savedScrollY.current, left: 0, behavior: "instant" })
+            })
+          }
         }}
       >
         <Button 
@@ -327,7 +410,7 @@ export function InventoryPage({
                 )}
               </div>
 
-              {/* Favorite button */}
+              {/* Favorite + Share buttons */}
               <div className="absolute top-4 left-4 flex gap-2">
                 <Button
                   variant="secondary"
@@ -339,6 +422,19 @@ export function InventoryPage({
                   onClick={() => toggleFavorite(selectedCar.id)}
                 >
                   <Heart className={cn("w-4 h-4", favorites.includes(selectedCar.id) && "fill-current")} />
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="w-9 h-9 bg-background/80 backdrop-blur-sm hover:bg-background"
+                  onClick={handleShare}
+                  title={copied ? "Copied!" : "Share"}
+                >
+                  {copied ? (
+                    <span className="text-[10px] text-primary font-semibold">✓</span>
+                  ) : (
+                    <Share2 className="w-4 h-4" />
+                  )}
                 </Button>
               </div>
             </div>
@@ -466,6 +562,7 @@ export function InventoryPage({
           </motion.div>
         )}
       </AnimatePresence>
+      <CarLoadingScreen car={loadingCar} />
       </>
     )
   }
@@ -563,6 +660,48 @@ export function InventoryPage({
             </Select>
           </motion.div>
 
+          {/* Recently Viewed strip */}
+          {recentlyViewed.length > 0 && !selectedCar && (() => {
+            const rvCars = recentlyViewed
+              .map(id => inventory.find(c => c.id === id))
+              .filter(Boolean) as Car[]
+            if (!rvCars.length) return null
+            return (
+              <div className="mb-8">
+                <div className="text-[10px] tracking-[0.25em] text-muted-foreground/60 mb-3">RECENTLY VIEWED</div>
+                <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-none">
+                  {rvCars.map(car => (
+                    <button
+                      key={car.id}
+                      onClick={() => handleCarOpen(car)}
+                      className="shrink-0 w-36 border border-border bg-card hover:border-primary/50 transition-colors text-left group"
+                    >
+                      <div className="relative h-20 bg-secondary overflow-hidden">
+                        {car.images?.preview ? (
+                          <Image
+                            src={car.images.preview}
+                            alt={`${car.year} ${car.make} ${car.model}`}
+                            fill
+                            sizes="144px"
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <CarIcon className="w-8 h-8 text-muted-foreground/20" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="p-2">
+                        <div className="text-[10px] text-muted-foreground/50 tracking-wide">{car.year}</div>
+                        <div className="text-xs font-display tracking-wide leading-tight truncate">{car.make} {car.model}</div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )
+          })()}
+
           {isLoading ? (
             <div className="grid sm:grid-cols-2 gap-4">
               {[0, 1, 2, 3].map((i) => (
@@ -586,10 +725,7 @@ export function InventoryPage({
                 <CarCard 
                   key={car.id} 
                   car={car} 
-                  onClick={() => {
-                    setSelectedCar(car)
-                    setDetailVisible(true)
-                  }}
+                  onClick={() => handleCarOpen(car)}
                   isFavorite={favorites.includes(car.id)}
                   onToggleFavorite={() => toggleFavorite(car.id)}
                   priority={index < 2}
@@ -651,6 +787,7 @@ export function InventoryPage({
           )}
         </div>
       </motion.div>
+      <CarLoadingScreen car={loadingCar} />
     </div>
   )
 }

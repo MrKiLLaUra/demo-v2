@@ -1,10 +1,15 @@
 "use client"
 
+import { useEffect, useRef } from "react"
+import { gsap } from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { Button } from "@/components/ui/button"
 import { CarCard } from "@/components/car-card"
 import { WhyUs } from "@/components/why-us"
+import { Testimonials } from "@/components/testimonials"
 import { Car, Page } from "@/lib/car-data"
-import { motion } from "framer-motion"
+
+gsap.registerPlugin(ScrollTrigger)
 
 interface HomePageProps {
   setPage: (page: Page) => void
@@ -31,168 +36,237 @@ function CarCardSkeleton() {
   )
 }
 
-export function HomePage({ 
-  setPage, 
+const STATS = [
+  { to: 200, suffix: "+", label: "Cars Sold" },
+  { to: 7, suffix: "+", label: "Years Experience" },
+  { to: 100, suffix: "%", label: "Transparent Pricing" },
+  { to: 24, suffix: "/7", label: "AI Assistant" },
+]
+
+function AnimatedCounter({ to, suffix, label }: { to: number; suffix: string; label: string }) {
+  const numRef = useRef<HTMLDivElement>(null)
+  const wrapRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const obj = { val: 0 }
+    const trigger = ScrollTrigger.create({
+      trigger: wrapRef.current,
+      start: "top 90%",
+      once: true,
+      onEnter: () => {
+        gsap.to(obj, {
+          val: to,
+          duration: 1.8,
+          ease: "power2.out",
+          onUpdate() {
+            if (numRef.current) numRef.current.textContent = Math.round(obj.val) + suffix
+          },
+        })
+      },
+    })
+    return () => trigger.kill()
+  }, [to, suffix])
+
+  return (
+    <div ref={wrapRef} className="text-center">
+      <div ref={numRef} className="font-display text-3xl md:text-4xl tracking-wide text-primary">
+        0{suffix}
+      </div>
+      <div className="text-[10px] md:text-xs text-muted-foreground tracking-[0.15em] mt-1 uppercase">
+        {label}
+      </div>
+    </div>
+  )
+}
+
+export function HomePage({
+  setPage,
   inventory,
   isLoading = false,
-  favorites, 
+  favorites,
   toggleFavorite,
 }: HomePageProps) {
   const featured = inventory.slice(0, 3)
-  const fadeInUp = {
-    initial: { opacity: 0, y: 20 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true },
-    transition: { duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] as const },
-  }
+  const containerRef = useRef<HTMLDivElement>(null)
+  const heroRef = useRef<HTMLElement>(null)
+  const bgTextRef = useRef<HTMLDivElement>(null)
+  const eyebrowRef = useRef<HTMLDivElement>(null)
+  const subtitleRef = useRef<HTMLParagraphElement>(null)
+  const ctaRef = useRef<HTMLDivElement>(null)
+  const statsRef = useRef<HTMLDivElement>(null)
 
-  const staggerContainer = {
-    initial: { opacity: 0 },
-    whileInView: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.14,
-        delayChildren: 0.1,
-      },
-    },
-    viewport: { once: true },
-  }
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // ── HERO ENTRANCE ──
+      const tl = gsap.timeline({ defaults: { ease: "power4.out" }, delay: 0.05 })
 
-  const staggerItem = {
-    initial: { opacity: 0, x: -24, y: 14 },
-    whileInView: { opacity: 1, x: 0, y: 0 },
-    transition: { duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] as const },
-  }
+      tl.from(eyebrowRef.current, { x: -60, autoAlpha: 0, duration: 0.9 }, 0)
+      // title lines slide up from inside overflow:hidden wrappers (masked reveal)
+      tl.from(".hero-line", { y: "115%", stagger: 0.13, duration: 1.15 }, 0.1)
+      tl.from(subtitleRef.current, { y: 30, autoAlpha: 0, duration: 0.8, ease: "power2.out" }, 0.85)
+      tl.from(ctaRef.current,      { y: 24, autoAlpha: 0, duration: 0.7, ease: "power2.out" }, 1.02)
+      tl.from(statsRef.current,    { y: 24, autoAlpha: 0, duration: 0.7, ease: "power2.out" }, 1.14)
+
+      // ── PARALLAX BG TEXT ──
+      gsap.to(bgTextRef.current, {
+        y: "-22%",
+        ease: "none",
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: 1.5,
+        },
+      })
+
+      // ── FEATURED HEADER ──
+      gsap.from(".featured-header", {
+        y: 40,
+        autoAlpha: 0,
+        duration: 0.9,
+        ease: "power3.out",
+        scrollTrigger: { trigger: ".featured-header", start: "top 86%" },
+      })
+
+      // ── FEATURED CARDS stagger ──
+      gsap.from(".featured-card", {
+        y: 90,
+        autoAlpha: 0,
+        stagger: { each: 0.16, from: "start" },
+        duration: 1.05,
+        ease: "power3.out",
+        scrollTrigger: { trigger: ".featured-grid", start: "top 83%" },
+      })
+    }, containerRef)
+
+    return () => ctx.revert()
+  }, [])
+
+  // Refresh when loading finishes so ScrollTrigger sees final card positions
+  useEffect(() => {
+    if (!isLoading) ScrollTrigger.refresh()
+  }, [isLoading])
 
   return (
-    <div>
-      {/* Hero */}
-      <motion.section
+    <div ref={containerRef}>
+      {/* ── HERO ── */}
+      <section
+        ref={heroRef}
         className="min-h-[92vh] flex items-center justify-center relative overflow-hidden border-b border-border/50"
-        {...fadeInUp}
       >
-        {/* Glow effect */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[radial-gradient(circle,rgba(227,31,43,0.07)_0%,transparent_70%)] pointer-events-none" />
-        
-        {/* Big background text */}
-        <div className="absolute font-display text-[18vw] md:text-[22vw] tracking-[-0.02em] text-foreground/[0.015] select-none whitespace-nowrap leading-none">
+        {/* Glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[radial-gradient(circle,rgba(227,31,43,0.07)_0%,transparent_70%)] pointer-events-none" />
+
+        {/* Parallax background text */}
+        <div
+          ref={bgTextRef}
+          className="absolute font-display text-[18vw] md:text-[22vw] tracking-[-0.02em] text-foreground/[0.015] select-none whitespace-nowrap leading-none"
+        >
           SAMBI TOP GEAR MOTORS
         </div>
-        
-        <motion.div
-          className="text-center relative z-10 px-6"
-          variants={staggerContainer}
-          initial="initial"
-          whileInView="whileInView"
-          viewport={{ once: true }}
-        >
-          <motion.div
+
+        <div className="text-center relative z-10 px-6">
+          {/* Eyebrow */}
+          <div
+            ref={eyebrowRef}
             className="text-xs md:text-sm tracking-[0.4em] text-primary mb-5 font-semibold"
-            variants={staggerItem}
           >
             LIMASSOL · CYPRUS · EST. 2019
-          </motion.div>
-          <motion.h1
-            className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-[110px] tracking-[0.05em] leading-[0.9] mb-7"
-            variants={staggerItem}
-          >
-            SAMBI TOP GEAR<br />
-            <span className="text-transparent [-webkit-text-stroke:1px_rgba(255,255,255,0.2)]">MOTORS</span><br />
-            LIMASSOL
-          </motion.h1>
-          <motion.p
+          </div>
+
+          {/* Title — each line in overflow:hidden for the masked slide-up reveal */}
+          <h1 className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-[110px] tracking-[0.05em] leading-[0.9] mb-7">
+            <div className="overflow-hidden">
+              <div className="hero-line">SAMBI TOP GEAR</div>
+            </div>
+            <div className="overflow-hidden">
+              <div className="hero-line text-transparent [-webkit-text-stroke:1px_rgba(255,255,255,0.2)]">
+                MOTORS
+              </div>
+            </div>
+            <div className="overflow-hidden">
+              <div className="hero-line">LIMASSOL</div>
+            </div>
+          </h1>
+
+          {/* Subtitle */}
+          <p
+            ref={subtitleRef}
             className="text-base md:text-lg text-muted-foreground max-w-md mx-auto mb-10 leading-relaxed font-light"
-            variants={staggerItem}
           >
-            We are the premier dealership in Limassol, with hand-picked vehicles, instant AI pricing estimates, and easy test-drive booking in one place.
-          </motion.p>
-          <motion.div className="flex flex-col sm:flex-row gap-4 justify-center" variants={staggerItem}>
-            <Button 
+            We are the premier dealership in Limassol, with hand-picked vehicles, instant AI pricing
+            estimates, and easy test-drive booking in one place.
+          </p>
+
+          {/* CTAs */}
+          <div ref={ctaRef} className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
               onClick={() => setPage("inventory")}
               className="bg-primary hover:bg-primary/90 text-primary-foreground font-display text-base tracking-[0.15em] px-9 py-6"
             >
               BROWSE INVENTORY
             </Button>
-            <Button 
+            <Button
               variant="outline"
               onClick={() => setPage("services")}
               className="border-foreground/20 hover:bg-foreground hover:text-background font-display text-base tracking-[0.15em] px-9 py-6"
             >
               OUR SERVICES
             </Button>
-          </motion.div>
-          
-          {/* Stats row */}
-          <motion.div className="flex flex-wrap gap-8 md:gap-12 justify-center mt-16 md:mt-20" variants={staggerItem}>
-            {[
-              ["200+", "Cars Sold"],
-              ["7+", "Years Experience"],
-              ["100%", "Transparent Pricing"],
-              ["24/7", "AI Assistant"],
-            ].map(([n, l]) => (
-              <div key={l} className="text-center">
-                <div className="font-display text-3xl md:text-4xl tracking-wide text-primary">{n}</div>
-                <div className="text-[10px] md:text-xs text-muted-foreground tracking-[0.15em] mt-1 uppercase">{l}</div>
-              </div>
-            ))}
-          </motion.div>
-        </motion.div>
-      </motion.section>
+          </div>
 
-    
-
-      {/* Featured Cars */}
-      <motion.section className="py-16 md:py-20 px-6" {...fadeInUp}>
-        <div className="max-w-[1100px] mx-auto">
-          <motion.div
-            className="flex flex-col sm:flex-row justify-between sm:items-end gap-4 mb-10"
-            variants={staggerContainer}
-            initial="initial"
-            whileInView="whileInView"
-            viewport={{ once: true }}
+          {/* Animated stat counters */}
+          <div
+            ref={statsRef}
+            className="flex flex-wrap gap-8 md:gap-12 justify-center mt-16 md:mt-20"
           >
-            <motion.div variants={staggerItem}>
+            {STATS.map((s) => (
+              <AnimatedCounter key={s.label} {...s} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FEATURED CARS ── */}
+      <section className="py-16 md:py-20 px-6">
+        <div className="max-w-[1100px] mx-auto">
+          <div className="featured-header flex flex-col sm:flex-row justify-between sm:items-end gap-4 mb-10">
+            <div>
               <div className="text-xs tracking-[0.3em] text-primary mb-2 font-semibold">HAND-PICKED</div>
               <h2 className="font-display text-3xl md:text-4xl tracking-wide">FEATURED CARS</h2>
-            </motion.div>
-            <motion.div variants={staggerItem}>
-              <Button 
-              variant="ghost" 
+            </div>
+            <Button
+              variant="ghost"
               onClick={() => setPage("inventory")}
               className="text-xs tracking-[0.2em] text-muted-foreground hover:text-foreground w-fit"
             >
               VIEW ALL
             </Button>
-            </motion.div>
-          </motion.div>
-          <motion.div
-            className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5"
-            variants={staggerContainer}
-            initial="initial"
-            whileInView="whileInView"
-            viewport={{ once: true }}
-          >
+          </div>
+
+          <div className="featured-grid grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
             {isLoading
               ? [0, 1, 2].map((i) => (
-                  <motion.div key={i} variants={staggerItem}>
+                  <div key={i} className="featured-card">
                     <CarCardSkeleton />
-                  </motion.div>
+                  </div>
                 ))
               : featured.map((car, index) => (
-                  <motion.div key={car.id} variants={staggerItem}>
-                    <CarCard 
-                      car={car} 
+                  <div key={car.id} className="featured-card">
+                    <CarCard
+                      car={car}
                       onClick={() => setPage("inventory")}
                       isFavorite={favorites.includes(car.id)}
                       onToggleFavorite={() => toggleFavorite(car.id)}
                       priority={index < 2}
                     />
-                  </motion.div>
+                  </div>
                 ))}
-          </motion.div>
+          </div>
         </div>
-      </motion.section>
+      </section>
 
+      <Testimonials />
       <WhyUs />
     </div>
   )

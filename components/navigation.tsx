@@ -1,10 +1,14 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
+import { gsap } from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { Button } from "@/components/ui/button"
 import { Menu, Heart, X } from "lucide-react"
 import { Page } from "@/lib/car-data"
 import { AnimatePresence, motion } from "framer-motion"
+
+gsap.registerPlugin(ScrollTrigger)
 
 interface NavigationProps {
   page: Page
@@ -38,45 +42,47 @@ const mobileMenuVariants = {
   exit: {
     y: -24,
     opacity: 0,
-    transition: {
-      duration: 0.2,
-      ease: "easeInOut",
-      when: "afterChildren",
-    },
+    transition: { duration: 0.2, ease: "easeInOut", when: "afterChildren" },
   },
 } as const
 
 const mobileMenuItemVariants = {
   hidden: { opacity: 0, y: 10 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.28, ease: "easeOut" },
-  },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.28, ease: "easeOut" } },
   exit: { opacity: 0, y: -6, transition: { duration: 0.16, ease: "easeIn" } },
 } as const
 
-export function Navigation({ 
-  page, 
-  setPage, 
+export function Navigation({
+  page,
+  setPage,
   favoritesCount,
   onShowFavorites,
 }: NavigationProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
-  
+  const navRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+
+    // Nav entrance
+    gsap.from(navRef.current, {
+      y: -60,
+      autoAlpha: 0,
+      duration: 0.7,
+      ease: "power3.out",
+      delay: 0.05,
+    })
+
+  }, [])
+
   const navigateWithScrollReset = (p: Page) => {
     setPage(p)
     window.scrollTo({ top: 0, left: 0, behavior: "instant" })
-
     const mainScrollable =
       document.getElementById("main-content") ??
       document.querySelector<HTMLElement>("main") ??
       document.querySelector<HTMLElement>("[data-scroll-container]") ??
       document.querySelector<HTMLElement>(".overflow-y-auto")
-
-    if (mainScrollable) {
-      mainScrollable.scrollTop = 0
-    }
+    if (mainScrollable) mainScrollable.scrollTop = 0
   }
 
   const handleNavClick = (p: Page) => {
@@ -85,10 +91,10 @@ export function Navigation({
   }
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border/50 bg-background/95 backdrop-blur-xl">
+    <nav ref={navRef} className="sticky top-0 z-50 border-b border-border/50 bg-background/95 backdrop-blur-xl">
       <div className="max-w-[1100px] mx-auto px-4 md:px-6 flex justify-between items-center h-16">
         {/* Logo */}
-        <button 
+        <button
           onClick={() => navigateWithScrollReset("home")}
           className="flex items-center gap-3 select-none group"
         >
@@ -97,35 +103,33 @@ export function Navigation({
             <div className="w-4 h-0.5 bg-primary/40 transition-all group-hover:w-6" />
           </div>
           <div>
-            <div className="font-display text-lg md:text-xl tracking-[0.35em] leading-none">SAMBI TOP GEAR</div>
-            <div className="text-[10px] tracking-[0.3em] text-primary font-semibold">MOTORS · LIMASSOL</div>
+            <div className="font-display text-lg md:text-xl tracking-[0.35em] leading-none">
+              SAMBI TOP GEAR
+            </div>
+            <div className="text-[10px] tracking-[0.3em] text-primary font-semibold">
+              MOTORS · LIMASSOL
+            </div>
           </div>
         </button>
 
         {/* Desktop Nav */}
         <div className="hidden lg:flex items-center gap-6">
-          {navItems.map(item => (
+          {navItems.map((item) => (
             <button
               key={item.key}
               onClick={() => navigateWithScrollReset(item.key)}
               className={`text-xs tracking-[0.2em] uppercase transition-colors ${
-                page === item.key 
-                  ? "text-primary" 
+                page === item.key
+                  ? "text-primary"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {item.label}
             </button>
           ))}
-          
-          {/* Action Buttons */}
+
           <div className="flex items-center gap-2 ml-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onShowFavorites}
-              className="relative"
-            >
+            <Button variant="ghost" size="icon" onClick={onShowFavorites} className="relative">
               <Heart className="w-4 h-4" />
               {favoritesCount > 0 && (
                 <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary text-primary-foreground text-[10px] rounded-full flex items-center justify-center">
@@ -133,8 +137,8 @@ export function Navigation({
                 </span>
               )}
             </Button>
-            
-            <Button 
+
+            <Button
               onClick={() => navigateWithScrollReset("inventory")}
               className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs tracking-widest px-5 ml-2"
             >
@@ -145,12 +149,7 @@ export function Navigation({
 
         {/* Mobile Nav */}
         <div className="flex lg:hidden items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onShowFavorites}
-            className="relative"
-          >
+          <Button variant="ghost" size="icon" onClick={onShowFavorites} className="relative">
             <Heart className="w-4 h-4" />
             {favoritesCount > 0 && (
               <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary text-primary-foreground text-[10px] rounded-full flex items-center justify-center">
@@ -158,13 +157,14 @@ export function Navigation({
               </span>
             )}
           </Button>
-          
+
           <Button variant="ghost" size="icon" onClick={() => setMobileOpen(true)}>
             <Menu className="w-5 h-5" />
           </Button>
         </div>
       </div>
 
+      {/* Mobile full-screen menu */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -182,7 +182,7 @@ export function Navigation({
               <X className="w-8 h-8" />
             </button>
 
-            {navItems.map(item => (
+            {navItems.map((item) => (
               <motion.button
                 key={item.key}
                 variants={mobileMenuItemVariants}

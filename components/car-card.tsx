@@ -1,14 +1,15 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
+import { gsap } from "gsap"
 import { Button } from "@/components/ui/button"
-import { Heart, Car as CarIcon } from "lucide-react"
+import { Heart, Car as CarIcon, MessageCircle } from "lucide-react"
 import { Car, fmt } from "@/lib/car-data"
 import { cn } from "@/lib/utils"
 
-// Tiny gray JPEG used as an instant blur placeholder while images load
-const BLUR_PLACEHOLDER = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/wAALCAABAAEBAREA/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QANRAAAgEDAwIDAQEBAAAAAAAAAQIRAwQABRIhMQYTQVEiYXGBBxQjkaGxwQgVJDLR/9oACAEBAAA/APUA/9k="
+const BLUR_PLACEHOLDER =
+  "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/wAALCAABAAEBAREA/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QANRAAAgEDAwIDAQEBAAAAAAAAAQIRAwQABRIhMQYTQVEiYXGBBxQjkaGxwQgVJDLR/9oACAEBAAA/APUA/9k="
 
 interface CarCardProps {
   car: Car
@@ -53,20 +54,63 @@ function PreviewImage({
   )
 }
 
-export function CarCard({ 
-  car, 
-  onClick, 
+export function CarCard({
+  car,
+  onClick,
   isFavorite = false,
   onToggleFavorite,
   priority = false,
 }: CarCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null)
   const ml = `${car.mileage.toLocaleString()} km`
   const isSold = car.status?.toLowerCase().trim() === "sold"
   const priceVisible = car.showPrice === true && car.price !== null
 
+  useEffect(() => {
+    const card = cardRef.current
+    if (!card) return
+
+    gsap.set(card, { transformPerspective: 700, transformStyle: "preserve-3d" })
+
+    const handleMove = (e: MouseEvent) => {
+      const rect = card.getBoundingClientRect()
+      const x = (e.clientX - rect.left) / rect.width - 0.5   // -0.5 to 0.5
+      const y = (e.clientY - rect.top) / rect.height - 0.5
+      gsap.to(card, {
+        rotationY: x * 14,
+        rotationX: -y * 9,
+        y: -6,
+        duration: 0.4,
+        ease: "power2.out",
+        overwrite: "auto",
+      })
+    }
+
+    const handleLeave = () => {
+      gsap.to(card, {
+        rotationY: 0,
+        rotationX: 0,
+        y: 0,
+        duration: 0.7,
+        ease: "power3.out",
+        overwrite: "auto",
+      })
+    }
+
+    card.addEventListener("mousemove", handleMove)
+    card.addEventListener("mouseleave", handleLeave)
+
+    return () => {
+      card.removeEventListener("mousemove", handleMove)
+      card.removeEventListener("mouseleave", handleLeave)
+      gsap.set(card, { clearProps: "all" })
+    }
+  }, [])
+
   return (
-    <div 
-      className="group border border-border bg-card overflow-hidden cursor-pointer transition-all duration-300 hover:border-primary hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(227,31,43,0.12)]"
+    <div
+      ref={cardRef}
+      className="group border border-border bg-card overflow-hidden cursor-pointer transition-[border-color,box-shadow] duration-300 hover:border-primary hover:shadow-[0_8px_28px_rgba(227,31,43,0.12)]"
     >
       {/* Image */}
       <div className="relative h-40 md:h-44 bg-secondary overflow-hidden" onClick={onClick}>
@@ -97,8 +141,8 @@ export function CarCard({
           )}
         </div>
 
-        {/* Action buttons */}
-        <div className="absolute top-3 left-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        {/* Favorite + WhatsApp buttons */}
+        <div className="absolute top-3 left-3 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
           {onToggleFavorite && (
             <Button
               variant="secondary"
@@ -115,6 +159,18 @@ export function CarCard({
               <Heart className={cn("w-4 h-4", isFavorite && "fill-current")} />
             </Button>
           )}
+          {!isSold && (
+            <a
+              href={`https://wa.me/35799929323?text=${encodeURIComponent(`Hi, I'm interested in the ${car.year} ${car.make} ${car.model}. Is it still available?`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="w-8 h-8 bg-background/80 backdrop-blur-sm hover:bg-background flex items-center justify-center transition-colors"
+              title="Ask on WhatsApp"
+            >
+              <MessageCircle className="w-4 h-4 text-[#25D366]" />
+            </a>
+          )}
         </div>
       </div>
 
@@ -128,8 +184,8 @@ export function CarCard({
         </h3>
         <div className="flex flex-wrap gap-1.5">
           {[car.fuel, car.transmission, ml].filter(Boolean).map((t, index) => (
-            <span 
-              key={index} 
+            <span
+              key={index}
               className="text-[10px] text-muted-foreground border border-border px-2 py-1 tracking-wide"
             >
               {t}
