@@ -87,7 +87,18 @@ export function SiteFooter() {
           <p className="text-xs text-muted-foreground/50 tracking-wide">
             © 2026 SAMBI TOP GEAR MOTORS · ALL RIGHTS RESERVED
           </p>
-          <p className="text-xs text-primary/70 tracking-widest">POWERED BY SAMBI AI</p>
+          <div className="flex items-center gap-4">
+            <p className="text-xs text-primary/70 tracking-widest">POWERED BY SAMBI AI</p>
+            <span className="text-muted-foreground/30">·</span>
+            <a
+              href="https://limenstudio.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-muted-foreground/40 hover:text-muted-foreground/70 tracking-widest transition-colors"
+            >
+              BUILT BY LIMEN STUDIO
+            </a>
+          </div>
         </div>
       </div>
     </footer>
