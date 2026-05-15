@@ -44,5 +44,44 @@ export default async function CarDetailPage({ params }: Props) {
     .filter(c => c.id !== car.id && c.status?.toLowerCase() !== "sold" && (c.make === car.make || Math.abs((c.price ?? 0) - (car.price ?? 0)) < 8000))
     .slice(0, 3)
 
-  return <CarDetailClient car={car} related={related} />
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Car",
+    "name": `${car.year} ${car.make} ${car.model}`,
+    "brand": { "@type": "Brand", "name": car.make },
+    "model": car.model,
+    "vehicleModelDate": String(car.year),
+    "color": car.color,
+    "fuelType": car.fuel,
+    "vehicleTransmission": car.transmission,
+    "mileageFromOdometer": {
+      "@type": "QuantitativeValue",
+      "value": car.mileage,
+      "unitCode": "KMT"
+    },
+    ...(car.showPrice && car.price ? {
+      "offers": {
+        "@type": "Offer",
+        "price": car.price,
+        "priceCurrency": "EUR",
+        "availability": "https://schema.org/InStock",
+        "seller": {
+          "@type": "AutoDealer",
+          "name": "Sambi Top Gear Motors",
+          "url": "https://sambitopgearmotors.com"
+        }
+      }
+    } : {}),
+    ...(car.images?.front ? { "image": car.images.front } : {}),
+  }
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <CarDetailClient car={car} related={related} />
+    </>
+  )
 }

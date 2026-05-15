@@ -15,12 +15,41 @@ const WHY_ITEMS = [
   { label: "Same-Day Cover", desc: "Drive away fully insured on the same day." },
 ]
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "AutoDealer",
+  "name": "Sambi Top Gear Motors",
+  "description": "Premium used car dealership in Limassol, Cyprus. Hand-picked vehicles, transparent pricing, and AI-powered search.",
+  "url": "https://sambitopgearmotors.com",
+  "telephone": "+35799929323",
+  "email": "sambitopgearmotors@gmail.com",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Limassol",
+    "addressCountry": "CY"
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+      "opens": "09:00",
+      "closes": "19:00"
+    }
+  ],
+  "priceRange": "€€",
+  "sameAs": ["https://wa.me/35799929323"]
+}
+
 export default async function HomePage() {
   const allCars = await fetchCars()
   const featured = allCars.filter(c => c.status?.toLowerCase() !== "sold").slice(0, 6)
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <HeroSection />
 
       {/* ── Featured Cars ── */}

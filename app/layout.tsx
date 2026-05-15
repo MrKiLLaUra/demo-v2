@@ -10,6 +10,7 @@ import { FloatingWhatsApp } from '@/components/floating-whatsapp'
 import { ChatWidget } from '@/components/chat-widget'
 import { FavoritesDrawerGlobal } from '@/components/favorites-drawer-global'
 import { Toaster } from '@/components/ui/sonner'
+import { PageTransition } from '@/components/page-transition'
 import './globals.css'
 
 const bebasNeue = Bebas_Neue({
@@ -64,9 +65,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <LenisProvider>
             <AosInit />
             <SiteNav />
-            <main className="flex-1">
+            <PageTransition>
               {children}
-            </main>
+            </PageTransition>
             <SiteFooter />
             <FloatingWhatsApp />
             <FavoritesDrawerGlobal />
