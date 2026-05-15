@@ -5,8 +5,15 @@ import { usePathname } from "next/navigation"
 
 const DURATION = 1.1
 
+const KNOWN_ROUTES = ["/", "/cars", "/services", "/about", "/contact"]
+
+function isKnown(pathname: string) {
+  return KNOWN_ROUTES.includes(pathname) || pathname.startsWith("/cars/")
+}
+
 export function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
+  const showCurtain = isKnown(pathname)
 
   return (
     <>
@@ -23,9 +30,8 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
         </motion.div>
       </AnimatePresence>
 
-      {/* Curtain */}
       <AnimatePresence>
-        <motion.div
+        {showCurtain && <motion.div
           key={pathname + "-curtain"}
           className="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-none"
           style={{ background: "radial-gradient(ellipse at center, #3a0a0d 0%, #0d0303 60%, #080101 100%)" }}
