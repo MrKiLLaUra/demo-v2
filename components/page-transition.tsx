@@ -9,7 +9,7 @@ const DURATION = 1.1
 const KNOWN_ROUTES = ["/", "/cars", "/services", "/about", "/contact"]
 
 function isKnown(pathname: string) {
-  return KNOWN_ROUTES.includes(pathname) || pathname.startsWith("/cars/")
+  return KNOWN_ROUTES.includes(pathname)
 }
 
 export function PageTransition({ children }: { children: React.ReactNode }) {
