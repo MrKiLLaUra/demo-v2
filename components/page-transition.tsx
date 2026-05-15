@@ -27,7 +27,8 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
       <AnimatePresence>
         <motion.div
           key={pathname + "-curtain"}
-          className="fixed inset-0 z-[9999] bg-background flex items-center justify-center pointer-events-none"
+          className="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-none"
+          style={{ background: "radial-gradient(ellipse at center, #3a0a0d 0%, #0d0303 60%, #080101 100%)" }}
           initial={{ x: "-100%" }}
           animate={{ x: ["-100%", "0%", "0%", "100%"] }}
           transition={{
