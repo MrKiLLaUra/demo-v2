@@ -14,11 +14,35 @@ export function getSupabase(): SupabaseClient | null {
   return _client
 }
 
-// Proxy so existing `supabase.from(...)` call sites keep working unchanged
+// Chainable mock returned when Supabase isn't configured.
+// Every method call returns the same chain; awaiting it resolves to { data: null, error: null }.
+function makeMock(): any {
+  const empty = Promise.resolve({ data: null, error: null })
+  const chain: any = new Proxy(function () {}, {
+    get(_, prop: string) {
+      if (prop === "then")     return empty.then.bind(empty)
+      if (prop === "catch")    return empty.catch.bind(empty)
+      if (prop === "finally")  return empty.finally.bind(empty)
+      if (prop === "data")     return null
+      if (prop === "error")    return null
+      // storage.from().getPublicUrl() returns { data: { publicUrl: "" } }
+      if (prop === "getPublicUrl") return () => ({ data: { publicUrl: "" } })
+      if (prop === "from")     return () => chain
+      return () => chain
+    },
+    apply() { return chain },
+  })
+  return chain
+}
+
 export const supabase = new Proxy({} as SupabaseClient, {
-  get(_, prop) {
+  get(_, prop: string) {
     const client = getSupabase()
-    if (!client) return () => ({ data: null, error: null })
-    return client[prop as keyof SupabaseClient]
+    if (!client) {
+      if (prop === "storage") return makeMock()
+      return makeMock()[prop]
+    }
+    const val = (client as any)[prop]
+    return typeof val === "function" ? val.bind(client) : val
   },
 })
