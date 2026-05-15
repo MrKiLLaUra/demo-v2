@@ -36,9 +36,24 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
             ease: [[0.76, 0, 0.24, 1], "linear", [0.76, 0, 0.24, 1]],
           }}
         >
+          {/* Red glow blob behind logo */}
+          <motion.div
+            className="absolute w-[500px] h-[500px] rounded-full pointer-events-none"
+            style={{ background: "radial-gradient(ellipse at center, rgba(227,31,43,0.35) 0%, transparent 70%)", filter: "blur(40px)" }}
+            animate={{
+              opacity: [0, 0, 1, 1, 0, 0],
+              scale:   [0.6, 0.6, 1.1, 1.1, 0.8, 0.8],
+            }}
+            transition={{
+              duration: DURATION,
+              times: [0, 0.25, 0.42, 0.58, 0.75, 1],
+              ease: "easeInOut",
+            }}
+          />
+
           {/* Logo inside curtain */}
           <motion.div
-            className="flex flex-col items-center leading-none select-none"
+            className="relative flex flex-col items-center leading-none select-none"
             animate={{
               opacity: [0, 0, 1, 1, 0, 0],
               scale:   [0.92, 0.92, 1, 1, 1.04, 1.04],
@@ -49,12 +64,16 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
               ease: "easeInOut",
             }}
           >
+            {/* Thin red line above */}
+            <div className="w-8 h-px bg-primary mb-3" />
             <span className="font-display text-3xl md:text-4xl tracking-[0.35em] text-foreground">
               SAMBI TOP GEAR
             </span>
-            <span className="text-[10px] tracking-[0.45em] text-primary font-semibold mt-1">
+            <span className="text-[10px] tracking-[0.45em] text-primary font-semibold mt-1.5">
               MOTORS · LIMASSOL
             </span>
+            {/* Thin red line below */}
+            <div className="w-8 h-px bg-primary mt-3" />
           </motion.div>
         </motion.div>
       </AnimatePresence>
