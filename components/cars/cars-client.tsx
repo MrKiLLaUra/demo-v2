@@ -15,6 +15,7 @@ import {
 import { useFavorites } from "@/components/favorites-provider"
 import { cn } from "@/lib/utils"
 import { Heart, MessageCircle } from "lucide-react"
+import { CarLoadingScreen } from "@/components/car-loading-screen"
 
 const BLUR = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/wAALCAABAAEBAREA/8QAFgABAQEAAAAAAAAAAAAAAAAABQQD/8QAFRABAQAAAAAAAAAAAAAAAAAAAAn/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8Aqt0AAAAB/9k="
 
@@ -205,7 +206,21 @@ export function CarsClient({ initialCars }: { initialCars: Car[] }) {
   const [reqForm, setReqForm] = useState({ name: "", phone: "", note: "" })
   const [reqSent, setReqSent] = useState(false)
   const [reqLoading, setReqLoading] = useState(false)
-  const handleNavigate = useCallback((car: Car) => {
+  const [loadingCar, setLoadingCar] = useState<Car | null>(null)
+
+  const handleNavigate = useCallback(async (car: Car) => {
+    setLoadingCar(car)
+    const srcs = [car.images?.front, car.images?.side, car.images?.preview].filter(Boolean) as string[]
+    await Promise.all([
+      new Promise<void>(r => setTimeout(r, 1500)),
+      Promise.race([
+        Promise.all(srcs.map(src => new Promise<void>(res => {
+          const img = new window.Image(); img.onload = img.onerror = () => res(); img.src = src
+        }))),
+        new Promise<void>(r => setTimeout(r, 2500)),
+      ]),
+    ])
+    // Navigate directly — loading screen disappears naturally when this component unmounts
     router.push(`/cars/${carSlug(car)}`)
   }, [router])
 
@@ -360,6 +375,8 @@ export function CarsClient({ initialCars }: { initialCars: Car[] }) {
           </div>
         </div>
       </div>
+
+      <CarLoadingScreen car={loadingCar} />
 
       {/* Mobile filter sheet */}
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
