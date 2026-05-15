@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion"
 import { usePathname } from "next/navigation"
+import { useEffect, useRef, useState } from "react"
 
 const DURATION = 1.1
 
@@ -13,7 +14,17 @@ function isKnown(pathname: string) {
 
 export function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const showCurtain = isKnown(pathname)
+  const prevPathname = useRef(pathname)
+  const [curtainKey, setCurtainKey] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (pathname !== prevPathname.current && isKnown(pathname)) {
+      setCurtainKey(pathname)
+    }
+    prevPathname.current = pathname
+  }, [pathname])
+
+  const showCurtain = curtainKey !== null
 
   return (
     <>
@@ -33,7 +44,7 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
       <AnimatePresence>
         {showCurtain ? (
           <motion.div
-            key={pathname + "-curtain"}
+            key={curtainKey + "-curtain"}
             className="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-none"
             style={{ background: "radial-gradient(ellipse at center, #3a0a0d 0%, #0d0303 60%, #080101 100%)" }}
             initial={{ x: "-100%" }}
