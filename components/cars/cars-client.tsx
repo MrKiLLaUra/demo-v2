@@ -15,7 +15,6 @@ import {
 import { useFavorites } from "@/components/favorites-provider"
 import { cn } from "@/lib/utils"
 import { Heart, MessageCircle } from "lucide-react"
-import { CarLoadingScreen } from "@/components/car-loading-screen"
 
 const BLUR = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/wAALCAABAAEBAREA/8QAFgABAQEAAAAAAAAAAAAAAAAABQQD/8QAFRABAQAAAAAAAAAAAAAAAAAAAAn/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8Aqt0AAAAB/9k="
 
@@ -206,21 +205,8 @@ export function CarsClient({ initialCars }: { initialCars: Car[] }) {
   const [reqForm, setReqForm] = useState({ name: "", phone: "", note: "" })
   const [reqSent, setReqSent] = useState(false)
   const [reqLoading, setReqLoading] = useState(false)
-  const [loadingCar, setLoadingCar] = useState<Car | null>(null)
-
-  const handleNavigate = useCallback(async (car: Car) => {
-    setLoadingCar(car)
-    const imageSrcs = [car.images?.front, car.images?.side, car.images?.preview].filter(Boolean) as string[]
-    const minWait = new Promise<void>(r => setTimeout(r, 1800))
-    const imgLoad = Promise.race([
-      Promise.all(imageSrcs.map(src => new Promise<void>(res => {
-        const img = new window.Image(); img.onload = img.onerror = () => res(); img.src = src
-      }))),
-      new Promise<void>(r => setTimeout(r, 4000)),
-    ])
-    await Promise.all([minWait, imgLoad])
-    setLoadingCar(null)
-    setTimeout(() => router.push(`/cars/${carSlug(car)}`), 320)
+  const handleNavigate = useCallback((car: Car) => {
+    router.push(`/cars/${carSlug(car)}`)
   }, [router])
 
   const activeFilterCount = Object.values(filters).filter(v => v !== "").length
@@ -374,8 +360,6 @@ export function CarsClient({ initialCars }: { initialCars: Car[] }) {
           </div>
         </div>
       </div>
-
-      <CarLoadingScreen car={loadingCar} />
 
       {/* Mobile filter sheet */}
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
