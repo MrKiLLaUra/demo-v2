@@ -3,8 +3,9 @@ import { redirect } from "next/navigation"
 import Link from "next/link"
 import { supabase } from "@/lib/supabase"
 import { fmt } from "@/lib/car-data"
-import { Plus, LogOut, Pencil } from "lucide-react"
+import { Plus, Pencil } from "lucide-react"
 import { AdminDeleteButton } from "@/components/admin/delete-button"
+import { LogoutButton } from "@/components/admin/logout-button"
 
 export const dynamic = "force-dynamic"
 
@@ -34,16 +35,7 @@ export default async function AdminDashboard() {
             <Plus className="w-3.5 h-3.5" />
             ADD CAR
           </Link>
-          <form action="/api/admin/auth" method="post">
-            <Link
-              href="/api/admin/auth"
-              onClick={async () => { await fetch("/api/admin/auth", { method: "DELETE" }) }}
-              className="flex items-center gap-2 border border-border hover:border-foreground/30 px-3 py-2 text-xs tracking-widest text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-              LOGOUT
-            </Link>
-          </form>
+          <LogoutButton />
         </div>
       </div>
 
