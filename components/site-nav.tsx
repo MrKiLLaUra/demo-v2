@@ -119,8 +119,8 @@ export function SiteNav() {
       {/* Mobile menu */}
       <div
         className={cn(
-          "fixed inset-0 z-40 bg-background flex flex-col pt-16 transition-all duration-300",
-          mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          "fixed inset-0 z-40 bg-background flex flex-col pt-16 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)]",
+          mobileOpen ? "translate-y-0 pointer-events-auto" : "-translate-y-full pointer-events-none"
         )}
       >
         <nav className="flex flex-col px-8 pt-10 gap-1">
@@ -131,17 +131,24 @@ export function SiteNav() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "font-display text-5xl tracking-wide py-3 border-b border-border/50 transition-colors",
-                  active ? "text-primary" : "text-foreground/70 hover:text-foreground"
+                  "font-display text-5xl tracking-wide py-3 border-b border-border/50 transition-all duration-500",
+                  active ? "text-primary" : "text-foreground/70 hover:text-foreground",
+                  mobileOpen ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"
                 )}
-                style={{ transitionDelay: mobileOpen ? `${i * 50}ms` : "0ms" }}
+                style={{ transitionDelay: mobileOpen ? `${120 + i * 60}ms` : "0ms" }}
               >
                 {link.label.toUpperCase()}
               </Link>
             )
           })}
         </nav>
-        <div className="px-8 mt-10">
+        <div
+          className={cn(
+            "px-8 mt-10 transition-all duration-500",
+            mobileOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+          )}
+          style={{ transitionDelay: mobileOpen ? "440ms" : "0ms" }}
+        >
           <a
             href="https://wa.me/35799929323"
             target="_blank"
