@@ -37,6 +37,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       status:       String(body.status || "Available").trim(),
       ai_blurb:     body.ai_blurb ? String(body.ai_blurb).trim() : null,
       images:       body.images ?? null,
+      new_stock:    Boolean(body.new_stock),
     })
     .eq("id", id)
     .select()

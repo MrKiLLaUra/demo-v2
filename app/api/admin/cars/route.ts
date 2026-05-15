@@ -40,5 +40,6 @@ function sanitize(b: Record<string, unknown>) {
     status:       String(b.status || "Available").trim(),
     ai_blurb:     b.ai_blurb ? String(b.ai_blurb).trim() : null,
     images:       b.images ?? null,
+    new_stock:    Boolean(b.new_stock),
   }
 }

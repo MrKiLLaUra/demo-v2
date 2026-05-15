@@ -27,11 +27,7 @@ interface Filters {
 const DEFAULT: Filters = { make:"",model:"",year:"",mileage:"",price:"",fuel:"",transmission:"" }
 
 function isNewArrival(car: Car): boolean {
-  if ((car as any).created_at) {
-    const created = new Date((car as any).created_at)
-    return (Date.now() - created.getTime()) < 14 * 24 * 60 * 60 * 1000
-  }
-  return false
+  return (car as any).new_stock === true
 }
 
 function CarCardItem({ car, onNavigate }: { car: Car; onNavigate: (car: Car) => void }) {

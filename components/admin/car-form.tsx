@@ -15,13 +15,13 @@ interface CarFormData {
   make: string; model: string; year: string; mileage: string
   fuel: string; transmission: string; price: string; show_price: boolean
   condition: string; color: string; description: string
-  status: string; ai_blurb: string; folder: string
+  status: string; ai_blurb: string; folder: string; new_stock: boolean
 }
 
 const EMPTY: CarFormData = {
   make: "", model: "", year: "2022", mileage: "", fuel: "Petrol",
   transmission: "Automatic", price: "", show_price: true, condition: "Excellent",
-  color: "Black", description: "", status: "Available", ai_blurb: "", folder: "",
+  color: "Black", description: "", status: "Available", ai_blurb: "", folder: "", new_stock: false,
 }
 
 interface Props {
@@ -211,6 +211,15 @@ export function CarForm({ mode, carId, initial }: Props) {
               <div className={cn("absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform", form.show_price ? "translate-x-5" : "translate-x-0.5")} />
             </div>
             <span className="text-xs text-muted-foreground">Show price publicly</span>
+          </label>
+          <label className="flex items-center gap-2.5 cursor-pointer pb-2.5">
+            <div
+              onClick={() => set("new_stock", !form.new_stock)}
+              className={cn("w-10 h-5 rounded-full transition-colors relative cursor-pointer", form.new_stock ? "bg-primary" : "bg-border")}
+            >
+              <div className={cn("absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform", form.new_stock ? "translate-x-5" : "translate-x-0.5")} />
+            </div>
+            <span className="text-xs text-muted-foreground">Show "NEW" badge</span>
           </label>
         </div>
       </div>
