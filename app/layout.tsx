@@ -11,6 +11,7 @@ import { ChatWidget } from '@/components/chat-widget'
 import { FavoritesDrawerGlobal } from '@/components/favorites-drawer-global'
 import { Toaster } from '@/components/ui/sonner'
 import { PageTransition } from '@/components/page-transition'
+import { CookieBanner } from '@/components/cookie-banner'
 import './globals.css'
 
 const bebasNeue = Bebas_Neue({
@@ -72,6 +73,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <FloatingWhatsApp />
             <FavoritesDrawerGlobal />
             <ChatWidget />
+            <CookieBanner />
             <Toaster position="bottom-right" theme="dark" />
             <Analytics />
           </LenisProvider>

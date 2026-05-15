@@ -26,11 +26,20 @@ interface Filters {
 
 const DEFAULT: Filters = { make:"",model:"",year:"",mileage:"",price:"",fuel:"",transmission:"" }
 
+function isNewArrival(car: Car): boolean {
+  if ((car as any).created_at) {
+    const created = new Date((car as any).created_at)
+    return (Date.now() - created.getTime()) < 14 * 24 * 60 * 60 * 1000
+  }
+  return false
+}
+
 function CarCardItem({ car, onNavigate }: { car: Car; onNavigate: (car: Car) => void }) {
   const { toggle, isFavorite } = useFavorites()
   const [imgErr, setImgErr] = useState(false)
   const isSold = car.status?.toLowerCase().trim() === "sold"
   const priceVisible = car.showPrice === true && car.price !== null
+  const newArrival = isNewArrival(car)
 
   return (
     <div className="group border border-border bg-card hover:border-primary/50 hover:shadow-[0_8px_32px_rgba(227,31,43,0.08)] transition-all duration-300 overflow-hidden">
@@ -56,6 +65,11 @@ function CarCardItem({ car, onNavigate }: { car: Car; onNavigate: (car: Car) => 
           {isSold && (
             <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
               <span className="rotate-[-28deg] font-display text-4xl tracking-widest text-primary border-2 border-primary/70 px-4 py-1 bg-black/60">SOLD</span>
+            </div>
+          )}
+          {newArrival && !isSold && (
+            <div className="absolute top-3 left-3 bg-primary text-primary-foreground text-[9px] tracking-[0.2em] font-semibold px-2.5 py-1">
+              NEW
             </div>
           )}
           <div className="absolute top-3 right-3">
