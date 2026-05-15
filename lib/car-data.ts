@@ -180,8 +180,25 @@ export async function fetchCarById(id: number): Promise<Car | null> {
   }
 }
 
+const DEMO_CAR: Car = {
+  id: 1,
+  make: "Mercedes-Benz",
+  model: "C 200",
+  year: 2022,
+  mileage: 28400,
+  fuel: "Petrol",
+  transmission: "Automatic",
+  price: 32900,
+  showPrice: true,
+  condition: "Excellent",
+  color: "Obsidian Black",
+  description: "Stunning C-Class in pristine condition. Full dealer service history, panoramic roof, AMG styling package, wireless charging, and 360° cameras.",
+  status: "Available",
+  images: { preview: "", front: "", side: "", back: "", interior: "", frontSeats: "", rearSeats: "" },
+}
+
 export async function fetchCars(): Promise<Car[]> {
-  if (!getSupabase()) return []
+  if (!getSupabase()) return [DEMO_CAR]
   const { data, error } = await supabase.from("cars").select("*").order("id")
   if (error) throw error
   return (data ?? []).map((row) => ({

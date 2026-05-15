@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useMemo, useCallback } from "react"
-import Link from "next/link"
+import { useState, useCallback } from "react"
+import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { SlidersHorizontal, ArrowUpDown, X, Search, Car as CarIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -15,6 +15,7 @@ import {
 import { useFavorites } from "@/components/favorites-provider"
 import { cn } from "@/lib/utils"
 import { Heart, MessageCircle } from "lucide-react"
+import { CarLoadingScreen } from "@/components/car-loading-screen"
 
 const BLUR = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/wAALCAABAAEBAREA/8QAFgABAQEAAAAAAAAAAAAAAAAABQQD/8QAFRABAQAAAAAAAAAAAAAAAAAAAAn/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8Aqt0AAAAB/9k="
 
@@ -25,7 +26,7 @@ interface Filters {
 
 const DEFAULT: Filters = { make:"",model:"",year:"",mileage:"",price:"",fuel:"",transmission:"" }
 
-function CarCardItem({ car }: { car: Car }) {
+function CarCardItem({ car, onNavigate }: { car: Car; onNavigate: (car: Car) => void }) {
   const { toggle, isFavorite } = useFavorites()
   const [imgErr, setImgErr] = useState(false)
   const isSold = car.status?.toLowerCase().trim() === "sold"
@@ -33,7 +34,7 @@ function CarCardItem({ car }: { car: Car }) {
 
   return (
     <div className="group border border-border bg-card hover:border-primary/50 hover:shadow-[0_8px_32px_rgba(227,31,43,0.08)] transition-all duration-300 overflow-hidden">
-      <Link href={`/cars/${carSlug(car)}`} className="block">
+      <button onClick={() => onNavigate(car)} className="block w-full text-left">
         <div className="relative h-44 md:h-48 bg-secondary overflow-hidden">
           {car.images?.preview && !imgErr ? (
             <Image
@@ -74,7 +75,7 @@ function CarCardItem({ car }: { car: Car }) {
             ))}
           </div>
         </div>
-      </Link>
+      </button>
       {/* Quick actions */}
       <div className="flex border-t border-border divide-x divide-border">
         <button
@@ -186,6 +187,7 @@ function FilterPanel({
 }
 
 export function CarsClient({ initialCars }: { initialCars: Car[] }) {
+  const router = useRouter()
   const [filters, setFilters] = useState<Filters>(DEFAULT)
   const [sortBy, setSortBy] = useState<SortOption>("year-new")
   const [results, setResults] = useState<Car[]>(() => sortCars(initialCars, "year-new"))
@@ -194,6 +196,22 @@ export function CarsClient({ initialCars }: { initialCars: Car[] }) {
   const [reqForm, setReqForm] = useState({ name: "", phone: "", note: "" })
   const [reqSent, setReqSent] = useState(false)
   const [reqLoading, setReqLoading] = useState(false)
+  const [loadingCar, setLoadingCar] = useState<Car | null>(null)
+
+  const handleNavigate = useCallback(async (car: Car) => {
+    setLoadingCar(car)
+    const imageSrcs = [car.images?.front, car.images?.side, car.images?.preview].filter(Boolean) as string[]
+    const minWait = new Promise<void>(r => setTimeout(r, 1800))
+    const imgLoad = Promise.race([
+      Promise.all(imageSrcs.map(src => new Promise<void>(res => {
+        const img = new window.Image(); img.onload = img.onerror = () => res(); img.src = src
+      }))),
+      new Promise<void>(r => setTimeout(r, 4000)),
+    ])
+    await Promise.all([minWait, imgLoad])
+    setLoadingCar(null)
+    setTimeout(() => router.push(`/cars/${carSlug(car)}`), 320)
+  }, [router])
 
   const activeFilterCount = Object.values(filters).filter(v => v !== "").length
 
@@ -307,7 +325,7 @@ export function CarsClient({ initialCars }: { initialCars: Car[] }) {
 
             {results.length > 0 ? (
               <div className="grid sm:grid-cols-2 gap-5">
-                {results.map(car => <CarCardItem key={car.id} car={car} />)}
+                {results.map(car => <CarCardItem key={car.id} car={car} onNavigate={handleNavigate} />)}
               </div>
             ) : (
               <div className="border border-border bg-card p-8 md:p-10 max-w-lg">
@@ -346,6 +364,8 @@ export function CarsClient({ initialCars }: { initialCars: Car[] }) {
           </div>
         </div>
       </div>
+
+      <CarLoadingScreen car={loadingCar} />
 
       {/* Mobile filter sheet */}
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
