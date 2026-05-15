@@ -91,7 +91,7 @@ export function SiteFooter() {
             <p className="text-xs text-primary/70 tracking-widest">POWERED BY SAMBI AI</p>
             <span className="text-muted-foreground/30">·</span>
             <a
-              href="https://limenstudio.com"
+              href="https://limen-studios.vercel.app"
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs text-muted-foreground/40 hover:text-muted-foreground/70 tracking-widest transition-colors"
