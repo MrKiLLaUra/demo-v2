@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase"
+import { supabase, getSupabase } from "@/lib/supabase"
 
 export interface Car {
   id: number
@@ -129,8 +129,11 @@ function buildImageUrls(raw: unknown): Car["images"] {
   const folder = (parsed as Record<string, unknown>).folder
   if (!folder || typeof folder !== "string" || !folder.trim()) return empty
 
+  const client = getSupabase()
+  if (!client) return empty
+
   const url = (suffix: string) =>
-    supabase.storage.from(STORAGE_BUCKET).getPublicUrl(`${folder}/${folder}${suffix}`).data.publicUrl
+    client.storage.from(STORAGE_BUCKET).getPublicUrl(`${folder}/${folder}${suffix}`).data.publicUrl
 
   return {
     preview:    url("-flip.jpg"),
@@ -155,6 +158,7 @@ export function idFromSlug(slug: string): number {
 }
 
 export async function fetchCarById(id: number): Promise<Car | null> {
+  if (!getSupabase()) return null
   const { data, error } = await supabase.from("cars").select("*").eq("id", id).single()
   if (error || !data) return null
   return {
@@ -177,6 +181,7 @@ export async function fetchCarById(id: number): Promise<Car | null> {
 }
 
 export async function fetchCars(): Promise<Car[]> {
+  if (!getSupabase()) return []
   const { data, error } = await supabase.from("cars").select("*").order("id")
   if (error) throw error
   return (data ?? []).map((row) => ({
