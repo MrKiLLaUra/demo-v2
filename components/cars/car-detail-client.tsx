@@ -16,6 +16,7 @@ export function CarDetailClient({ car, related }: Props) {
   const { toggle, isFavorite } = useFavorites()
   const isSold = car.status?.toLowerCase().trim() === "sold"
   const priceVisible = car.showPrice === true && car.price !== null
+  const hasSale = priceVisible && car.sale_price != null && car.sale_price > 0
   const fav = isFavorite(car.id)
 
   const [bookForm, setBookForm] = useState({ name: "", phone: "", email: "", date: "" })
@@ -117,9 +118,18 @@ export function CarDetailClient({ car, related }: Props) {
               </h1>
               <div className="flex items-center gap-4">
                 {priceVisible ? (
-                  <div className="bg-primary text-primary-foreground px-5 py-2.5 font-display text-2xl tracking-wide">
-                    {fmt(car.price!)}
-                  </div>
+                  hasSale ? (
+                    <div className="flex flex-col gap-1">
+                      <span className="text-muted-foreground line-through text-lg font-medium">{fmt(car.price!)}</span>
+                      <div className="bg-primary text-primary-foreground px-5 py-2.5 font-display text-2xl tracking-wide -rotate-1 shadow-lg inline-block">
+                        {fmt(car.sale_price!)}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-primary text-primary-foreground px-5 py-2.5 font-display text-2xl tracking-wide">
+                      {fmt(car.price!)}
+                    </div>
+                  )
                 ) : (
                   <div className="border border-primary text-primary px-4 py-2 text-xs tracking-widest">
                     PRICE ON APPLICATION

@@ -13,14 +13,14 @@ const STATUSES = ["Available", "Sold", "Reserved", "Coming Soon"]
 
 interface CarFormData {
   make: string; model: string; year: string; mileage: string
-  fuel: string; transmission: string; price: string; show_price: boolean
+  fuel: string; transmission: string; price: string; sale_price: string; show_price: boolean
   condition: string; color: string; description: string
   status: string; ai_blurb: string; folder: string; new_stock: boolean
 }
 
 const EMPTY: CarFormData = {
   make: "", model: "", year: "2022", mileage: "", fuel: "Petrol",
-  transmission: "Automatic", price: "", show_price: true, condition: "Excellent",
+  transmission: "Automatic", price: "", sale_price: "", show_price: true, condition: "Excellent",
   color: "Black", description: "", status: "Available", ai_blurb: "", folder: "", new_stock: false,
 }
 
@@ -202,6 +202,10 @@ export function CarForm({ mode, carId, initial }: Props) {
           <div>
             <label className={labelClass}>PRICE (€)</label>
             <input type="number" value={form.price} onChange={e => set("price", e.target.value)} className={inputClass} placeholder="Leave blank for POA" />
+          </div>
+          <div>
+            <label className={labelClass}>SALE PRICE (€) <span className="text-muted-foreground normal-case tracking-normal font-normal">— shows strikethrough on original</span></label>
+            <input type="number" value={form.sale_price} onChange={e => set("sale_price", e.target.value)} className={inputClass} placeholder="Leave blank for no discount" />
           </div>
           <label className="flex items-center gap-2.5 cursor-pointer pb-2.5">
             <div

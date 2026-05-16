@@ -30,6 +30,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       fuel:         String(body.fuel || "").trim(),
       transmission: String(body.transmission || "").trim(),
       price:        body.price !== "" && body.price != null ? Number(body.price) : null,
+      sale_price:   body.sale_price !== "" && body.sale_price != null ? Number(body.sale_price) : null,
       show_price:   Boolean(body.show_price),
       condition:    String(body.condition || "").trim(),
       color:        String(body.color || "").trim(),

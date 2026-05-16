@@ -33,6 +33,7 @@ function sanitize(b: Record<string, unknown>) {
     fuel:         String(b.fuel || "").trim(),
     transmission: String(b.transmission || "").trim(),
     price:        b.price !== "" && b.price != null ? Number(b.price) : null,
+    sale_price:   b.sale_price !== "" && b.sale_price != null ? Number(b.sale_price) : null,
     show_price:   Boolean(b.show_price),
     condition:    String(b.condition || "").trim(),
     color:        String(b.color || "").trim(),

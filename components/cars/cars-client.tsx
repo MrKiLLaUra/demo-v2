@@ -35,6 +35,7 @@ function CarCardItem({ car, onNavigate }: { car: Car; onNavigate: (car: Car) => 
   const [imgErr, setImgErr] = useState(false)
   const isSold = car.status?.toLowerCase().trim() === "sold"
   const priceVisible = car.showPrice === true && car.price !== null
+  const hasSale = priceVisible && car.sale_price != null && car.sale_price > 0
   const newArrival = isNewArrival(car)
 
   return (
@@ -70,7 +71,14 @@ function CarCardItem({ car, onNavigate }: { car: Car; onNavigate: (car: Car) => 
           )}
           <div className="absolute top-3 right-3">
             {priceVisible ? (
-              <span className="bg-primary text-primary-foreground px-3 py-1.5 font-display text-sm tracking-wide">{fmt(car.price!)}</span>
+              hasSale ? (
+                <div className="flex flex-col items-end gap-0.5">
+                  <span className="text-[10px] text-white/60 line-through bg-black/50 px-2 py-0.5 backdrop-blur-sm">{fmt(car.price!)}</span>
+                  <span className="bg-primary text-primary-foreground px-3 py-1.5 font-display text-sm tracking-wide -rotate-2 shadow-lg inline-block">{fmt(car.sale_price!)}</span>
+                </div>
+              ) : (
+                <span className="bg-primary text-primary-foreground px-3 py-1.5 font-display text-sm tracking-wide">{fmt(car.price!)}</span>
+              )
             ) : (
               <span className="border border-primary/70 text-primary px-2.5 py-1 text-[10px] tracking-widest bg-background/80 backdrop-blur-sm">POA</span>
             )}
