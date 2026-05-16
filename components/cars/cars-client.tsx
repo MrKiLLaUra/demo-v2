@@ -27,7 +27,7 @@ interface Filters {
 const DEFAULT: Filters = { make:"",model:"",year:"",mileage:"",price:"",fuel:"",transmission:"" }
 
 function isNewArrival(car: Car): boolean {
-  return (car as any).new_stock === true
+  return car.new_stock === true
 }
 
 function CarCardItem({ car, onNavigate }: { car: Car; onNavigate: (car: Car) => void }) {
