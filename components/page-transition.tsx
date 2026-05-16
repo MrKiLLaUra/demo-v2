@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { usePathname } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 
-const DURATION = 1.1
+const DURATION = 1.6
 
 const KNOWN_ROUTES = ["/", "/cars", "/services", "/about", "/contact"]
 
