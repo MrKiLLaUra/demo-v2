@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { usePathname } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 
-const DURATION = 1.6
+const DURATION = 1.3
 
 const KNOWN_ROUTES = ["/", "/cars", "/services", "/about", "/contact"]
 
@@ -62,7 +62,7 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
             }
             transition={{
               duration: DURATION,
-              times: [0, 0.38, 0.62, 1],
+              times: [0, 0.23, 0.53, 1],
               ease: [[0.76, 0, 0.24, 1], "linear", [0.76, 0, 0.24, 1]],
             }}
           >
@@ -70,13 +70,13 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
               className="absolute w-[500px] h-[500px] rounded-full pointer-events-none"
               style={{ background: "radial-gradient(ellipse at center, rgba(227,31,43,0.35) 0%, transparent 70%)", filter: "blur(40px)" }}
               animate={{ opacity: [0, 0, 1, 1, 0, 0], scale: [0.6, 0.6, 1.1, 1.1, 0.8, 0.8] }}
-              transition={{ duration: DURATION, times: [0, 0.25, 0.42, 0.58, 0.75, 1], ease: "easeInOut" }}
+              transition={{ duration: DURATION, times: [0, 0.20, 0.36, 0.54, 0.70, 1], ease: "easeInOut" }}
             />
 
             <motion.div
               className="relative flex items-center justify-center select-none px-8"
               animate={{ opacity: [0, 0, 1, 1, 0, 0], scale: [0.92, 0.92, 1, 1, 1.04, 1.04] }}
-              transition={{ duration: DURATION, times: [0, 0.28, 0.40, 0.60, 0.72, 1], ease: "easeInOut" }}
+              transition={{ duration: DURATION, times: [0, 0.23, 0.36, 0.54, 0.65, 1], ease: "easeInOut" }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
