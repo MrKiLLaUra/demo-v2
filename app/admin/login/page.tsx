@@ -33,7 +33,10 @@ export default function AdminLogin() {
     <div className="min-h-screen flex items-center justify-center px-6">
       <div className="w-full max-w-sm">
         <div className="mb-10 text-center">
-          <div className="font-display text-3xl tracking-[0.3em] mb-1">SAMBI TOP GEAR</div>
+          <div className="relative overflow-hidden mx-auto mb-2" style={{ width: 200, height: 44 }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/sambi-logo.png" alt="Sambi Top Gear" style={{ position: "absolute", width: 200, top: -68, mixBlendMode: "screen" }} />
+          </div>
           <div className="text-[10px] tracking-[0.4em] text-primary">ADMIN PANEL</div>
         </div>
 

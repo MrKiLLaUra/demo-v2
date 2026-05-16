@@ -140,17 +140,9 @@ export function CarLoadingScreen({ car }: { car: Car | null }) {
         ${show ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
       >
         {/* Branding */}
-        <div className="flex flex-col items-center gap-[5px] mb-10">
-          <div className="flex gap-1.5">
-            <div className="w-8 h-[2px] bg-primary" />
-            <div className="w-3 h-[2px] bg-primary/40" />
-          </div>
-          <div className="font-display text-xl tracking-[0.42em] text-white mt-2">
-            SAMBI TOP GEAR
-          </div>
-          <div className="text-[10px] tracking-[0.3em] text-primary font-semibold">
-            MOTORS · LIMASSOL
-          </div>
+        <div className="relative overflow-hidden mb-10" style={{ width: 220, height: 48 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/sambi-logo.png" alt="Sambi Top Gear" style={{ position: "absolute", width: 220, top: -75, mixBlendMode: "screen" }} />
         </div>
 
         {/* Animated ring + icon */}

@@ -21,8 +21,10 @@ export function SiteFooter() {
 
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <div className="font-display text-2xl tracking-[0.25em] mb-1">SAMBI TOP GEAR</div>
-            <div className="text-[10px] tracking-[0.35em] text-primary font-semibold mb-5">MOTORS · LIMASSOL</div>
+            <div className="relative overflow-hidden mb-5" style={{ width: 200, height: 44 }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/sambi-logo.png" alt="Sambi Top Gear" style={{ position: "absolute", width: 200, top: -68, mixBlendMode: "screen" }} />
+            </div>
             <p className="text-sm text-muted-foreground leading-relaxed font-light max-w-[240px]">
               Premium used car dealership in Limassol, Cyprus. Hand-picked vehicles, transparent pricing, AI-powered search.
             </p>
