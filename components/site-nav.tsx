@@ -52,13 +52,13 @@ export function SiteNav() {
       >
         <div className="max-w-[1320px] mx-auto px-6 md:px-8 h-16 md:h-18 flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex flex-col leading-none group">
-            <span className="font-display text-lg tracking-[0.3em] text-foreground group-hover:text-primary transition-colors">
-              SAMBI TOP GEAR
-            </span>
-            <span className="text-[9px] tracking-[0.4em] text-primary font-semibold">
-              MOTORS · LIMASSOL
-            </span>
+          <Link href="/" className="block relative overflow-hidden shrink-0" style={{ width: 200, height: 44 }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/sambi-logo.png"
+              alt="Sambi Top Gear"
+              style={{ position: "absolute", width: 200, top: -68, mixBlendMode: "screen" }}
+            />
           </Link>
 
           {/* Desktop nav */}
