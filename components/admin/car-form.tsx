@@ -30,8 +30,8 @@ interface Props {
   initial?: Partial<CarFormData>
 }
 
-const inputClass = "w-full bg-[oklch(0.12_0_0)] border border-border px-3 py-2.5 text-sm outline-none focus:border-primary/50 transition-colors placeholder:text-muted-foreground/40"
-const labelClass = "text-[9px] tracking-[0.2em] text-muted-foreground/70 block mb-1.5"
+const inputClass = "w-full bg-[oklch(0.12_0_0)] border-2 border-border px-3 py-2.5 text-sm outline-none focus:border-primary/60 transition-colors placeholder:text-muted-foreground/50"
+const labelClass = "text-xs tracking-[0.15em] text-muted-foreground font-medium block mb-1.5"
 
 export function CarForm({ mode, carId, initial }: Props) {
   const router = useRouter()
@@ -139,7 +139,7 @@ export function CarForm({ mode, carId, initial }: Props) {
 
       {/* Basic info */}
       <div className="border border-border bg-card p-6 space-y-4">
-        <h2 className="text-[10px] tracking-[0.3em] text-primary font-semibold">BASIC INFO</h2>
+        <h2 className="text-sm tracking-[0.25em] text-primary font-semibold">BASIC INFO</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           <div>
             <label className={labelClass}>MAKE *</label>
@@ -197,7 +197,7 @@ export function CarForm({ mode, carId, initial }: Props) {
 
       {/* Pricing */}
       <div className="border border-border bg-card p-6 space-y-4">
-        <h2 className="text-[10px] tracking-[0.3em] text-primary font-semibold">PRICING</h2>
+        <h2 className="text-sm tracking-[0.25em] text-primary font-semibold">PRICING</h2>
         <div className="grid grid-cols-2 gap-4 items-end">
           <div>
             <label className={labelClass}>PRICE (€)</label>
@@ -230,7 +230,7 @@ export function CarForm({ mode, carId, initial }: Props) {
 
       {/* Description */}
       <div className="border border-border bg-card p-6 space-y-4">
-        <h2 className="text-[10px] tracking-[0.3em] text-primary font-semibold">DESCRIPTION</h2>
+        <h2 className="text-sm tracking-[0.25em] text-primary font-semibold">DESCRIPTION</h2>
         <div className="space-y-4">
           <div>
             <label className={labelClass}>DESCRIPTION</label>
@@ -245,7 +245,7 @@ export function CarForm({ mode, carId, initial }: Props) {
 
       {/* Images */}
       <div className="border border-border bg-card p-6 space-y-4">
-        <h2 className="text-[10px] tracking-[0.3em] text-primary font-semibold">IMAGES</h2>
+        <h2 className="text-sm tracking-[0.25em] text-primary font-semibold">IMAGES</h2>
         <div>
           <label className={labelClass}>IMAGE FOLDER NAME (used for Supabase storage path)</label>
           <input
@@ -255,7 +255,7 @@ export function CarForm({ mode, carId, initial }: Props) {
             className={inputClass}
             placeholder="e.g. 2022-mercedes-c200"
           />
-          <p className="text-[10px] text-muted-foreground/50 mt-1.5">
+          <p className="text-xs text-muted-foreground/60 mt-1.5">
             Files will be uploaded as: <span className="text-muted-foreground">{form.folder || "folder"}/{form.folder || "folder"}-front.jpg</span> etc.
           </p>
         </div>

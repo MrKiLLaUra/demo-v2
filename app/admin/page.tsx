@@ -25,7 +25,7 @@ export default async function AdminDashboard() {
       <div className="border-b border-border px-6 md:px-10 py-4 flex items-center justify-between">
         <div>
           <div className="font-display text-xl tracking-[0.25em]">SAMBI ADMIN</div>
-          <div className="text-[9px] tracking-[0.3em] text-primary">DASHBOARD</div>
+          <div className="text-xs tracking-[0.25em] text-primary font-medium">DASHBOARD</div>
         </div>
         <div className="flex items-center gap-3">
           <Link
@@ -47,25 +47,25 @@ export default async function AdminDashboard() {
             { label: "AVAILABLE", value: available },
             { label: "SOLD", value: sold },
           ].map(s => (
-            <div key={s.label} className="border border-border bg-card p-4 text-center">
+            <div key={s.label} className="border-2 border-border bg-card p-4 text-center">
               <div className="font-display text-3xl text-primary">{s.value}</div>
-              <div className="text-[9px] tracking-[0.2em] text-muted-foreground mt-1">{s.label}</div>
+              <div className="text-xs tracking-[0.15em] text-muted-foreground mt-1">{s.label}</div>
             </div>
           ))}
         </div>
 
         {/* Table */}
-        <div className="border border-border overflow-hidden">
+        <div className="border-2 border-border overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border bg-card">
-                  <th className="text-left px-4 py-3 text-[9px] tracking-[0.2em] text-muted-foreground font-normal">ID</th>
-                  <th className="text-left px-4 py-3 text-[9px] tracking-[0.2em] text-muted-foreground font-normal">CAR</th>
-                  <th className="text-left px-4 py-3 text-[9px] tracking-[0.2em] text-muted-foreground font-normal">YEAR</th>
-                  <th className="text-left px-4 py-3 text-[9px] tracking-[0.2em] text-muted-foreground font-normal">MILEAGE</th>
-                  <th className="text-left px-4 py-3 text-[9px] tracking-[0.2em] text-muted-foreground font-normal">PRICE</th>
-                  <th className="text-left px-4 py-3 text-[9px] tracking-[0.2em] text-muted-foreground font-normal">STATUS</th>
+                  <th className="text-left px-4 py-3 text-xs tracking-[0.15em] text-muted-foreground font-medium">ID</th>
+                  <th className="text-left px-4 py-3 text-xs tracking-[0.15em] text-muted-foreground font-medium">CAR</th>
+                  <th className="text-left px-4 py-3 text-xs tracking-[0.15em] text-muted-foreground font-medium">YEAR</th>
+                  <th className="text-left px-4 py-3 text-xs tracking-[0.15em] text-muted-foreground font-medium">MILEAGE</th>
+                  <th className="text-left px-4 py-3 text-xs tracking-[0.15em] text-muted-foreground font-medium">PRICE</th>
+                  <th className="text-left px-4 py-3 text-xs tracking-[0.15em] text-muted-foreground font-medium">STATUS</th>
                   <th className="px-4 py-3" />
                 </tr>
               </thead>
@@ -73,7 +73,7 @@ export default async function AdminDashboard() {
                 {(cars ?? []).map((car, i) => {
                   const isSold = car.status?.toLowerCase() === "sold"
                   return (
-                    <tr key={car.id} className={`border-b border-border/50 hover:bg-card/50 transition-colors ${i % 2 === 0 ? "" : "bg-card/20"}`}>
+                    <tr key={car.id} className={`border-b border-border hover:bg-card/50 transition-colors ${i % 2 === 0 ? "" : "bg-card/20"}`}>
                       <td className="px-4 py-3 text-muted-foreground text-xs">{car.id}</td>
                       <td className="px-4 py-3 font-medium">{car.make} {car.model}</td>
                       <td className="px-4 py-3 text-muted-foreground">{car.year}</td>
@@ -82,7 +82,7 @@ export default async function AdminDashboard() {
                         {car.show_price && car.price ? fmt(car.price) : <span className="text-muted-foreground text-xs">POA</span>}
                       </td>
                       <td className="px-4 py-3">
-                        <span className={`text-[9px] tracking-widest px-2 py-1 ${isSold ? "bg-muted text-muted-foreground" : "bg-primary/10 text-primary"}`}>
+                        <span className={`text-xs tracking-wider px-2.5 py-1 font-medium ${isSold ? "bg-muted text-muted-foreground" : "bg-primary/10 text-primary"}`}>
                           {(car.status || "Available").toUpperCase()}
                         </span>
                       </td>
@@ -90,7 +90,7 @@ export default async function AdminDashboard() {
                         <div className="flex items-center gap-2 justify-end">
                           <Link
                             href={`/admin/cars/${car.id}/edit`}
-                            className="flex items-center gap-1.5 text-[10px] tracking-widest text-muted-foreground hover:text-foreground transition-colors border border-border hover:border-foreground/30 px-2.5 py-1.5"
+                            className="flex items-center gap-1.5 text-xs tracking-wider text-muted-foreground hover:text-foreground transition-colors border-2 border-border hover:border-foreground/40 px-2.5 py-1.5"
                           >
                             <Pencil className="w-3 h-3" />
                             EDIT
