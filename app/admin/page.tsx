@@ -49,7 +49,7 @@ export default async function AdminDashboard() {
           ].map(s => (
             <div key={s.label} className="border-2 border-border bg-card p-4 text-center">
               <div className="font-display text-3xl text-primary">{s.value}</div>
-              <div className="text-xs tracking-[0.15em] text-muted-foreground mt-1">{s.label}</div>
+              <div className="text-xs tracking-[0.15em] text-foreground font-bold mt-1">{s.label}</div>
             </div>
           ))}
         </div>
@@ -60,12 +60,12 @@ export default async function AdminDashboard() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border bg-card">
-                  <th className="text-left px-4 py-3 text-xs tracking-[0.15em] text-muted-foreground font-medium">ID</th>
-                  <th className="text-left px-4 py-3 text-xs tracking-[0.15em] text-muted-foreground font-medium">CAR</th>
-                  <th className="text-left px-4 py-3 text-xs tracking-[0.15em] text-muted-foreground font-medium">YEAR</th>
-                  <th className="text-left px-4 py-3 text-xs tracking-[0.15em] text-muted-foreground font-medium">MILEAGE</th>
-                  <th className="text-left px-4 py-3 text-xs tracking-[0.15em] text-muted-foreground font-medium">PRICE</th>
-                  <th className="text-left px-4 py-3 text-xs tracking-[0.15em] text-muted-foreground font-medium">STATUS</th>
+                  <th className="text-left px-4 py-3 text-xs tracking-[0.15em] text-foreground font-bold">ID</th>
+                  <th className="text-left px-4 py-3 text-xs tracking-[0.15em] text-foreground font-bold">CAR</th>
+                  <th className="text-left px-4 py-3 text-xs tracking-[0.15em] text-foreground font-bold">YEAR</th>
+                  <th className="text-left px-4 py-3 text-xs tracking-[0.15em] text-foreground font-bold">MILEAGE</th>
+                  <th className="text-left px-4 py-3 text-xs tracking-[0.15em] text-foreground font-bold">PRICE</th>
+                  <th className="text-left px-4 py-3 text-xs tracking-[0.15em] text-foreground font-bold">STATUS</th>
                   <th className="px-4 py-3" />
                 </tr>
               </thead>
@@ -74,12 +74,12 @@ export default async function AdminDashboard() {
                   const isSold = car.status?.toLowerCase() === "sold"
                   return (
                     <tr key={car.id} className={`border-b border-border hover:bg-card/50 transition-colors ${i % 2 === 0 ? "" : "bg-card/20"}`}>
-                      <td className="px-4 py-3 text-muted-foreground text-xs">{car.id}</td>
-                      <td className="px-4 py-3 font-medium">{car.make} {car.model}</td>
-                      <td className="px-4 py-3 text-muted-foreground">{car.year}</td>
-                      <td className="px-4 py-3 text-muted-foreground">{car.mileage?.toLocaleString()} km</td>
-                      <td className="px-4 py-3">
-                        {car.show_price && car.price ? fmt(car.price) : <span className="text-muted-foreground text-xs">POA</span>}
+                      <td className="px-4 py-3 text-foreground font-semibold text-xs">{car.id}</td>
+                      <td className="px-4 py-3 font-bold">{car.make} {car.model}</td>
+                      <td className="px-4 py-3 text-foreground font-semibold">{car.year}</td>
+                      <td className="px-4 py-3 text-foreground font-semibold">{car.mileage?.toLocaleString()} km</td>
+                      <td className="px-4 py-3 font-semibold">
+                        {car.show_price && car.price ? fmt(car.price) : <span className="text-foreground/60 text-xs font-medium">POA</span>}
                       </td>
                       <td className="px-4 py-3">
                         <span className={`text-xs tracking-wider px-2.5 py-1 font-medium ${isSold ? "bg-muted text-muted-foreground" : "bg-primary/10 text-primary"}`}>
@@ -90,7 +90,7 @@ export default async function AdminDashboard() {
                         <div className="flex items-center gap-2 justify-end">
                           <Link
                             href={`/admin/cars/${car.id}/edit`}
-                            className="flex items-center gap-1.5 text-xs tracking-wider text-muted-foreground hover:text-foreground transition-colors border-2 border-border hover:border-foreground/40 px-2.5 py-1.5"
+                            className="flex items-center gap-1.5 text-xs tracking-wider text-foreground font-semibold transition-colors border-2 border-border hover:border-foreground/60 px-2.5 py-1.5"
                           >
                             <Pencil className="w-3 h-3" />
                             EDIT
@@ -105,7 +105,7 @@ export default async function AdminDashboard() {
             </table>
 
             {(cars ?? []).length === 0 && (
-              <div className="text-center py-16 text-muted-foreground text-sm">
+              <div className="text-center py-16 text-foreground text-sm font-medium">
                 No cars yet. <Link href="/admin/cars/new" className="text-primary hover:underline">Add your first car</Link>
               </div>
             )}

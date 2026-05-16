@@ -31,7 +31,7 @@ interface Props {
 }
 
 const inputClass = "w-full bg-[oklch(0.12_0_0)] border-2 border-border px-3 py-2.5 text-sm outline-none focus:border-primary/60 transition-colors placeholder:text-muted-foreground/50"
-const labelClass = "text-xs tracking-[0.15em] text-muted-foreground font-medium block mb-1.5"
+const labelClass = "text-xs tracking-[0.15em] text-foreground font-bold block mb-1.5"
 
 export function CarForm({ mode, carId, initial }: Props) {
   const router = useRouter()
@@ -214,7 +214,7 @@ export function CarForm({ mode, carId, initial }: Props) {
             >
               <div className={cn("absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform", form.show_price ? "translate-x-5" : "translate-x-0.5")} />
             </div>
-            <span className="text-xs text-muted-foreground">Show price publicly</span>
+            <span className="text-xs text-foreground font-semibold">Show price publicly</span>
           </label>
           <label className="flex items-center gap-2.5 cursor-pointer pb-2.5">
             <div
@@ -223,7 +223,7 @@ export function CarForm({ mode, carId, initial }: Props) {
             >
               <div className={cn("absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform", form.new_stock ? "translate-x-5" : "translate-x-0.5")} />
             </div>
-            <span className="text-xs text-muted-foreground">Show "NEW" badge</span>
+            <span className="text-xs text-foreground font-semibold">Show "NEW" badge</span>
           </label>
         </div>
       </div>
@@ -255,7 +255,7 @@ export function CarForm({ mode, carId, initial }: Props) {
             className={inputClass}
             placeholder="e.g. 2022-mercedes-c200"
           />
-          <p className="text-xs text-muted-foreground/60 mt-1.5">
+          <p className="text-xs text-foreground/50 mt-1.5">
             Files will be uploaded as: <span className="text-muted-foreground">{form.folder || "folder"}/{form.folder || "folder"}-front.jpg</span> etc.
           </p>
         </div>

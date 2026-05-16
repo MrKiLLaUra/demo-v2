@@ -42,13 +42,13 @@ export default function AdminLogin() {
 
         <form onSubmit={handleSubmit} className="border border-border bg-card p-8 space-y-4">
           <div>
-            <label className="text-[9px] tracking-[0.2em] text-muted-foreground block mb-1.5">PASSWORD</label>
+            <label className="text-xs tracking-[0.15em] text-foreground font-bold block mb-1.5">PASSWORD</label>
             <input
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
               autoFocus
-              className="w-full bg-input border border-border px-4 py-3 text-sm outline-none focus:border-primary/50 transition-colors"
+              className="w-full bg-input border-2 border-border px-4 py-3 text-sm outline-none focus:border-primary/60 transition-colors"
               placeholder="Enter admin password"
             />
           </div>
