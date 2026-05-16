@@ -67,7 +67,7 @@ export function CarGallery({ images, carName }: { images: GalleryImage[]; carNam
           className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center"
           onClick={() => setLightbox(false)}
         >
-          <div className="relative w-full max-w-5xl mx-4 aspect-video" onClick={e => e.stopPropagation()}>
+          <div className="relative w-[95vw] h-[88vh]" onClick={e => e.stopPropagation()}>
             <Image src={current.src} alt={`${carName} - ${current.label}`} fill className="object-contain" sizes="100vw" quality={90} />
           </div>
           {/* Nav */}
