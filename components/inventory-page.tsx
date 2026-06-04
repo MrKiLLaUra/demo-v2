@@ -46,6 +46,7 @@ function SafeImage({
   sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
   quality = 70,
   onClick,
+  onError,
 }: {
   src: string
   alt: string
@@ -54,6 +55,7 @@ function SafeImage({
   sizes?: string
   quality?: number
   onClick?: () => void
+  onError?: () => void
 }) {
   const [errored, setErrored] = useState(false)
   const iconSize = fallbackSize === "lg" ? "w-24 h-24" : fallbackSize === "sm" ? "w-8 h-8" : "w-12 h-12"
@@ -74,7 +76,7 @@ function SafeImage({
       placeholder="blur"
       blurDataURL={BLUR_PLACEHOLDER}
       className={className}
-      onError={() => setErrored(true)}
+      onError={() => { setErrored(true); onError?.() }}
       onClick={onClick}
     />
   )
@@ -197,7 +199,11 @@ export function InventoryPage({
       ]
     : []
   const [activeGalleryImage, setActiveGalleryImage] = useState<keyof Car["images"]>("front")
-  
+  const [brokenImages, setBrokenImages] = useState<Set<string>>(new Set())
+  const visibleGalleryEntries = detailGalleryEntries.filter(
+    (image) => image.src && !brokenImages.has(image.key)
+  )
+
   // Booking state
   const [bookingCar, setBookingCar] = useState<Car | null>(null)
   const [bookForm, setBookForm] = useState({ name: "", phone: "", email: "", date: "" })
@@ -238,6 +244,7 @@ export function InventoryPage({
   useEffect(() => {
     if (selectedCar) {
       setActiveGalleryImage("front")
+      setBrokenImages(new Set())
       document.title = `${selectedCar.year} ${selectedCar.make} ${selectedCar.model} | Sambi Top Gear Motors`
     } else {
       document.title = "Inventory | Sambi Top Gear Motors"
@@ -439,7 +446,7 @@ export function InventoryPage({
               </div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-5">
-              {detailGalleryEntries.map((image) => (
+              {visibleGalleryEntries.map((image) => (
                 <button
                   key={image.key}
                   type="button"
@@ -457,6 +464,7 @@ export function InventoryPage({
                       fallbackSize="sm"
                       sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 16vw"
                       quality={60}
+                      onError={() => setBrokenImages((prev) => new Set(prev).add(image.key))}
                     />
                   </div>
                   <div className="px-2.5 py-2 text-[10px] tracking-[0.15em] uppercase text-muted-foreground border-t border-border">
