@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { supabase } from "@/lib/supabase"
+import { notifyLead } from "@/lib/notify"
 
 export async function POST(req: Request) {
   try {
@@ -23,6 +24,22 @@ export async function POST(req: Request) {
     })
 
     if (error) throw error
+
+    await notifyLead({
+      kind: "New Vehicle Sourcing Request",
+      fields: [
+        { label: "Name", value: name },
+        { label: "Phone", value: phone },
+        { label: "Email", value: email },
+        { label: "Make", value: make },
+        { label: "Model", value: model },
+        { label: "Year from", value: year },
+        { label: "Fuel", value: fuel },
+        { label: "Gearbox", value: transmission },
+        { label: "Budget (€)", value: budget },
+        { label: "Notes", value: notes },
+      ],
+    })
 
     return NextResponse.json({ ok: true })
   } catch (err) {

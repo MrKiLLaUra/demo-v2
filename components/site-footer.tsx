@@ -11,7 +11,14 @@ const NAV = [
   { href: "/contact",  label: "Contact" },
 ]
 
-const SERVICES = ["Used Car Sales", "Vehicle Sourcing", "Financing", "Insurance", "Pre-Sale Inspection", "AI Price Engine"]
+const SERVICES = [
+  { label: "Used Car Sales",      href: "/services/used-car-sales" },
+  { label: "Vehicle Sourcing",    href: "/services/vehicle-sourcing" },
+  { label: "Financing",           href: "/services/financing" },
+  { label: "Insurance",           href: "/services/insurance" },
+  { label: "Pre-Sale Inspection", href: "/services/pre-sale-inspection" },
+  { label: "AI Price Engine",     href: "/services/ai-price-engine" },
+]
 
 export function SiteFooter() {
   return (
@@ -58,7 +65,11 @@ export function SiteFooter() {
             <h4 className="text-[10px] tracking-[0.3em] text-primary mb-5 font-semibold">SERVICES</h4>
             <ul className="flex flex-col gap-2.5">
               {SERVICES.map(s => (
-                <li key={s} className="text-sm text-muted-foreground">{s}</li>
+                <li key={s.href}>
+                  <Link href={s.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    {s.label}
+                  </Link>
+                </li>
               ))}
             </ul>
           </div>

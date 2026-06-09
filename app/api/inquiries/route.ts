@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { supabase } from "@/lib/supabase"
+import { notifyLead } from "@/lib/notify"
 
 export async function POST(req: Request) {
   try {
@@ -18,6 +19,17 @@ export async function POST(req: Request) {
     })
 
     if (error) throw error
+
+    await notifyLead({
+      kind: subject?.trim() ? `New Inquiry — ${subject.trim()}` : "New Website Inquiry",
+      fields: [
+        { label: "Name", value: name },
+        { label: "Email", value: email },
+        { label: "Phone", value: phone },
+        { label: "Subject", value: subject },
+        { label: "Message", value: message },
+      ],
+    })
 
     return NextResponse.json({ ok: true })
   } catch (err) {
