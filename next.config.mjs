@@ -10,6 +10,9 @@ const nextConfig = {
   },
   allowedDevOrigins: ['192.168.1.104'],
   images: {
+    // Vercel image optimizer returns 402 on this account's free quota;
+    // images are pre-optimized, serve them as-is.
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
