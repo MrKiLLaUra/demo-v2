@@ -7,7 +7,6 @@ import { SiteFooter } from '@/components/site-footer'
 import { LenisProvider } from '@/components/lenis-provider'
 import { FavoritesProvider } from '@/components/favorites-provider'
 import { AosInit } from '@/components/aos-init'
-import { FloatingWhatsApp } from '@/components/floating-whatsapp'
 import { ChatWidget } from '@/components/chat-widget'
 import { FavoritesDrawerGlobal } from '@/components/favorites-drawer-global'
 import { Toaster } from '@/components/ui/sonner'
@@ -85,7 +84,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {children}
             </PageTransition>
             <SiteFooter />
-            <FloatingWhatsApp />
             <FavoritesDrawerGlobal />
             <ChatWidget />
             <CookieBanner />

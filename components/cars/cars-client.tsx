@@ -1,11 +1,13 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { SlidersHorizontal, ArrowUpDown, X, Search, Car as CarIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet"
 import {
@@ -28,6 +30,10 @@ const DEFAULT: Filters = { make:"",model:"",year:"",mileage:"",price:"",fuel:"",
 
 function isNewArrival(car: Car): boolean {
   return car.new_stock === true
+}
+
+function isSoldCar(car: Car): boolean {
+  return car.status?.toLowerCase().trim() === "sold"
 }
 
 function CarCardItem({ car, onNavigate }: { car: Car; onNavigate: (car: Car) => void }) {
@@ -211,6 +217,7 @@ export function CarsClient({ initialCars }: { initialCars: Car[] }) {
   const [results, setResults] = useState<Car[]>(() => sortCars(initialCars, "year-new"))
   const [searched, setSearched] = useState(false)
   const [sheetOpen, setSheetOpen] = useState(false)
+  const [hideSold, setHideSold] = useState(false)
   const [reqForm, setReqForm] = useState({ name: "", phone: "", note: "" })
   const [reqSent, setReqSent] = useState(false)
   const [reqLoading, setReqLoading] = useState(false)
@@ -233,6 +240,14 @@ export function CarsClient({ initialCars }: { initialCars: Car[] }) {
   }, [router])
 
   const activeFilterCount = Object.values(filters).filter(v => v !== "").length
+
+  // Apply the "hide sold" toggle on top of the current search results so it
+  // takes effect instantly without re-running the search.
+  const displayed = useMemo(
+    () => (hideSold ? results.filter(c => !isSoldCar(c)) : results),
+    [results, hideSold]
+  )
+  const soldCount = useMemo(() => results.filter(isSoldCar).length, [results])
 
   const doSearch = useCallback(() => {
     const res = initialCars.filter(c => {
@@ -321,12 +336,21 @@ export function CarsClient({ initialCars }: { initialCars: Car[] }) {
                   )}
                 </button>
                 <p className="text-sm text-muted-foreground tracking-wide hidden sm:block">
-                  {results.length} VEHICLE{results.length !== 1 ? "S" : ""}
+                  {displayed.length} VEHICLE{displayed.length !== 1 ? "S" : ""}
                 </p>
               </div>
 
-              {/* Sort */}
-              <Select value={sortBy} onValueChange={handleSortChange}>
+              <div className="flex items-center gap-4">
+                {/* Hide sold toggle */}
+                <div className="flex items-center gap-2">
+                  <Switch id="hide-sold" checked={hideSold} onCheckedChange={setHideSold} disabled={soldCount === 0} />
+                  <Label htmlFor="hide-sold" className="text-xs tracking-widest text-muted-foreground cursor-pointer whitespace-nowrap">
+                    HIDE SOLD{soldCount > 0 ? ` (${soldCount})` : ""}
+                  </Label>
+                </div>
+
+                {/* Sort */}
+                <Select value={sortBy} onValueChange={handleSortChange}>
                 <SelectTrigger className="w-[200px] bg-input border-border">
                   <ArrowUpDown className="w-3.5 h-3.5 mr-2" />
                   <SelectValue />
@@ -339,12 +363,24 @@ export function CarsClient({ initialCars }: { initialCars: Car[] }) {
                   <SelectItem value="mileage-low">Mileage: Low → High</SelectItem>
                   <SelectItem value="mileage-high">Mileage: High → Low</SelectItem>
                 </SelectContent>
-              </Select>
+                </Select>
+              </div>
             </div>
 
-            {results.length > 0 ? (
+            {displayed.length > 0 ? (
               <div className="grid sm:grid-cols-2 gap-5">
-                {results.map(car => <CarCardItem key={car.id} car={car} onNavigate={handleNavigate} />)}
+                {displayed.map(car => <CarCardItem key={car.id} car={car} onNavigate={handleNavigate} />)}
+              </div>
+            ) : results.length > 0 && hideSold ? (
+              <div className="border border-border bg-card p-8 md:p-10 max-w-lg text-center">
+                <div className="text-[10px] tracking-[0.3em] text-primary mb-3 font-semibold">ALL SOLD</div>
+                <h2 className="font-display text-2xl tracking-wide mb-3">EVERY MATCH IS SOLD</h2>
+                <p className="text-sm text-muted-foreground mb-6 leading-relaxed font-light">
+                  All vehicles matching your filters have been sold. Turn off &ldquo;Hide sold&rdquo; to see them, or adjust your filters.
+                </p>
+                <Button variant="outline" onClick={() => setHideSold(false)} className="font-display tracking-widest">
+                  SHOW SOLD CARS
+                </Button>
               </div>
             ) : (
               <div className="border border-border bg-card p-8 md:p-10 max-w-lg">

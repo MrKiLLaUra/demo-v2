@@ -42,7 +42,17 @@ const jsonLd = {
 
 export default async function HomePage() {
   const allCars = await fetchCars()
-  const featured = allCars.filter(c => c.status?.toLowerCase() !== "sold").slice(0, 6)
+  const featured = allCars
+    .filter(c => c.status?.toLowerCase() !== "sold")
+    // Newest additions first: sort by created_at, falling back to id (highest =
+    // most recently added) so ties — e.g. the initial backfill — still surface
+    // the last-added cars.
+    .sort((a, b) => {
+      const ta = a.created_at ? Date.parse(a.created_at) : 0
+      const tb = b.created_at ? Date.parse(b.created_at) : 0
+      return tb - ta || b.id - a.id
+    })
+    .slice(0, 6)
 
   return (
     <>
