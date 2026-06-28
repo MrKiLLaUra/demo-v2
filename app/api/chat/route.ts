@@ -90,7 +90,7 @@ Current inventory:
 ${inventoryForPrompt}`
 
     const completion = await anthropic.messages.create({
-      model: 'claude-4-sonnet-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 600,
       system: systemPrompt,
       messages,

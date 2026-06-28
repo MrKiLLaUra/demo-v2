@@ -23,31 +23,22 @@ export function ContactPage() {
     e.preventDefault()
     if (!form.name || !form.email || !form.message) return
 
-    const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY
-    if (!accessKey) {
-      setError("Contact form is not configured yet. Please add your Web3Forms access key.")
-      return
-    }
-
     setIsSending(true)
     setError("")
 
     try {
-      const response = await fetch("https://api.web3forms.com/submit", {
+      const response = await fetch("/api/inquiries", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          access_key: accessKey,
-          from_name: "Sambi Top Gear Motors Website",
-          subject: form.subject || "New lead from website contact form",
           name: form.name,
           email: form.email,
           phone: form.phone,
+          subject: form.subject || "New lead from website contact form",
           message: form.message,
         }),
       })
-      const result = await response.json()
-      if (result.success) {
+      if (response.ok) {
         setSent(true)
         setForm({ name: "", email: "", phone: "", subject: "", message: "" })
       } else {
