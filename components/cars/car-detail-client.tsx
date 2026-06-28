@@ -1,10 +1,13 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { ChevronLeft, Heart, Share2, Car as CarIcon, MessageCircle } from "lucide-react"
 import { Car, fmt, carSlug } from "@/lib/car-data"
+
+// Test-drive slots, every 30 min within opening hours (Mon–Sat 10:00–18:00).
+const BOOK_SLOTS = ["10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30","17:00","17:30"]
 import { useFavorites } from "@/components/favorites-provider"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
@@ -19,9 +22,28 @@ export function CarDetailClient({ car, related }: Props) {
   const hasSale = priceVisible && car.sale_price != null && car.sale_price > 0
   const fav = isFavorite(car.id)
 
-  const [bookForm, setBookForm] = useState({ name: "", phone: "", email: "", date: "" })
+  const [bookForm, setBookForm] = useState({ name: "", phone: "", email: "", date: "", time: "" })
   const [bookSent, setBookSent] = useState(false)
   const [bookLoading, setBookLoading] = useState(false)
+  const [availableSlots, setAvailableSlots] = useState<string[]>(BOOK_SLOTS)
+
+  // When the date changes, ask which 30-min slots are still free. The API checks
+  // both Google calendars and removes any slot that overlaps a busy block.
+  useEffect(() => {
+    if (!bookForm.date) { setAvailableSlots(BOOK_SLOTS); return }
+    let active = true
+    fetch(`/api/availability?date=${bookForm.date}`)
+      .then(r => r.json())
+      .then((data: { available?: string[] }) => {
+        if (!active) return
+        const slots = data.available ?? BOOK_SLOTS
+        setAvailableSlots(slots)
+        // If the slot the user picked just became unavailable, clear it.
+        setBookForm(p => (p.time && !slots.includes(p.time) ? { ...p, time: "" } : p))
+      })
+      .catch(() => { if (active) setAvailableSlots(BOOK_SLOTS) })
+    return () => { active = false }
+  }, [bookForm.date])
 
   const handleShare = useCallback(async () => {
     const url = window.location.href
@@ -35,13 +57,22 @@ export function CarDetailClient({ car, related }: Props) {
   }, [car])
 
   const handleBook = async () => {
-    if (!bookForm.name || !bookForm.phone || !bookForm.date) return
+    if (!bookForm.name || !bookForm.phone || !bookForm.date || !bookForm.time) return
     setBookLoading(true)
     try {
+      // Combine date + chosen time into one value so the calendar event lands at the right hour.
+      const preferred = bookForm.time ? `${bookForm.date}T${bookForm.time}` : bookForm.date
       await fetch("/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ car_id: car.id, car_name: `${car.year} ${car.make} ${car.model}`, ...bookForm }),
+        body: JSON.stringify({
+          car_id: car.id,
+          car_name: `${car.year} ${car.make} ${car.model}`,
+          name: bookForm.name,
+          phone: bookForm.phone,
+          email: bookForm.email,
+          date: preferred,
+        }),
       })
       setBookSent(true)
       toast.success("Test drive booked! We'll confirm shortly.")
@@ -193,9 +224,9 @@ export function CarDetailClient({ car, related }: Props) {
                 {!bookSent ? (
                   <div className="grid grid-cols-2 gap-3">
                     {[
-                      { key: "name",  placeholder: "Full name",     type: "text",  span: false },
+                      { key: "name",  placeholder: "Full name",      type: "text",  span: false },
                       { key: "phone", placeholder: "+357 99 000000", type: "tel",   span: false },
-                      { key: "email", placeholder: "Email (opt.)",  type: "email", span: false },
+                      { key: "email", placeholder: "Email (opt.)",   type: "email", span: true  },
                       { key: "date",  placeholder: "Preferred date", type: "date",  span: false },
                     ].map(f => (
                       <input
@@ -204,12 +235,23 @@ export function CarDetailClient({ car, related }: Props) {
                         placeholder={f.placeholder}
                         value={bookForm[f.key as keyof typeof bookForm]}
                         onChange={e => setBookForm(p => ({ ...p, [f.key]: e.target.value }))}
-                        className="bg-input border border-border px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary/50 transition-colors [color-scheme:dark]"
+                        className={`${f.span ? "col-span-2 " : ""}bg-input border border-border px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary/50 transition-colors [color-scheme:dark]`}
                       />
                     ))}
+                    <select
+                      value={bookForm.time}
+                      onChange={e => setBookForm(p => ({ ...p, time: e.target.value }))}
+                      disabled={!bookForm.date}
+                      className={`bg-input border border-border px-3 py-2.5 text-sm outline-none focus:border-primary/50 transition-colors [color-scheme:dark] disabled:opacity-50 ${bookForm.time ? "text-foreground" : "text-muted-foreground/50"}`}
+                    >
+                      <option value="">{!bookForm.date ? "Pick a date first" : availableSlots.length ? "Preferred time" : "No slots left"}</option>
+                      {availableSlots.map(t => (
+                        <option key={t} value={t} className="text-foreground">{t}</option>
+                      ))}
+                    </select>
                     <button
                       onClick={handleBook}
-                      disabled={!bookForm.name || !bookForm.phone || !bookForm.date || bookLoading}
+                      disabled={!bookForm.name || !bookForm.phone || !bookForm.date || !bookForm.time || bookLoading}
                       className="col-span-2 bg-secondary hover:bg-secondary/80 text-foreground py-3 text-xs font-semibold tracking-widest transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {bookLoading ? "BOOKING..." : "CONFIRM BOOKING"}
