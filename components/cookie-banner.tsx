@@ -11,15 +11,22 @@ export function CookieBanner() {
 
   useEffect(() => {
     if (!localStorage.getItem(COOKIE_KEY)) setVisible(true)
+    // Let any "Cookie settings" link re-open the banner so visitors can
+    // change or withdraw consent at any time (GDPR Art. 7(3)).
+    const open = () => setVisible(true)
+    window.addEventListener("open-cookie-settings", open)
+    return () => window.removeEventListener("open-cookie-settings", open)
   }, [])
 
   const accept = () => {
     localStorage.setItem(COOKIE_KEY, "accepted")
+    window.dispatchEvent(new Event("cookie-consent-changed"))
     setVisible(false)
   }
 
   const decline = () => {
     localStorage.setItem(COOKIE_KEY, "declined")
+    window.dispatchEvent(new Event("cookie-consent-changed"))
     setVisible(false)
   }
 
@@ -35,9 +42,9 @@ export function CookieBanner() {
         >
           <div className="max-w-[1320px] mx-auto flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <p className="text-xs text-muted-foreground font-light leading-relaxed flex-1">
-              We use cookies to improve your experience and analyse site traffic.
-              By continuing you agree to our use of cookies.{" "}
-              <Link href="/privacy" className="text-primary hover:underline">Learn more</Link>
+              We use cookies to analyse site traffic and improve your experience. Analytics and
+              session-recording cookies are only set if you click Accept.{" "}
+              <Link href="/cookies" className="text-primary hover:underline">Learn more</Link>
             </p>
             <div className="flex gap-3 shrink-0">
               <button

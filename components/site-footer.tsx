@@ -96,7 +96,31 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="border-t border-border mt-12 pt-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        {/* Legal */}
+        <div className="border-t border-border mt-12 pt-8 flex flex-wrap gap-x-6 gap-y-2">
+          {[
+            { label: "Privacy Policy", href: "/privacy" },
+            { label: "Terms of Service", href: "/terms" },
+            { label: "Cookie Policy", href: "/cookies" },
+          ].map(l => (
+            <Link
+              key={l.href}
+              href={l.href}
+              className="text-xs text-muted-foreground/60 hover:text-foreground tracking-wide transition-colors"
+            >
+              {l.label}
+            </Link>
+          ))}
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new Event("open-cookie-settings"))}
+            className="text-xs text-muted-foreground/60 hover:text-foreground tracking-wide transition-colors"
+          >
+            Cookie Settings
+          </button>
+        </div>
+
+        <div className="mt-6 pt-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <p className="text-xs text-muted-foreground/50 tracking-wide">
             © 2026 SAMBI TOP GEAR MOTORS · ALL RIGHTS RESERVED
           </p>
@@ -104,7 +128,7 @@ export function SiteFooter() {
             <p className="text-xs text-primary/70 tracking-widest">POWERED BY SAMBI AI</p>
             <span className="text-muted-foreground/30">·</span>
             <a
-              href="https://limen-studios.vercel.app"
+              href="https://limen-studios.com"
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs text-muted-foreground/40 hover:text-muted-foreground/70 tracking-widest transition-colors"

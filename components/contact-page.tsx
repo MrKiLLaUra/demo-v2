@@ -10,7 +10,7 @@ const contactInfo = [
   { icon: MapPin, label: "Address",          value: "Limassol, Cyprus" },
   { icon: Phone,  label: "Phone / WhatsApp", value: "+35799929323" },
   { icon: Mail,   label: "Email",            value: "sambitopgearmotors@gmail.com" },
-  { icon: Clock,  label: "Hours",            value: "Mon–Sat: 9:00 – 19:00" },
+  { icon: Clock,  label: "Hours",            value: "Mon–Sat: 10:00 – 18:00 · Sun: Closed" },
 ]
 
 export function ContactPage() {

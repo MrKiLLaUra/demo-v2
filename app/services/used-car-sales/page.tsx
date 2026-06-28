@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 }
 
 const POINTS = [
-  { title: "Hand-Picked Stock", desc: "Every car is sourced from trusted suppliers across Europe and chosen for condition and value." },
+  { title: "Hand-Picked Stock", desc: "Every car is sourced from trusted suppliers across the globe and chosen for condition and value." },
   { title: "Fully Documented", desc: "Complete service history and paperwork on every vehicle. No hidden past, no guesswork." },
   { title: "Fair, Honest Pricing", desc: "The price on the tag is the price you pay. No inflated numbers, no pushy add-ons." },
   { title: "Inspected & Ready", desc: "Each car passes our 100-point check before it reaches the lot and your driveway." },
@@ -34,7 +34,7 @@ export default async function UsedCarSalesPage() {
             USED CAR SALES
           </h1>
           <p data-aos="fade-up" data-aos-delay="160" className="text-muted-foreground max-w-lg font-light leading-relaxed text-base md:text-lg">
-            Hand-picked vehicles from trusted sources across Europe. Every car is inspected, documented, and priced fairly — what you see is what you get.
+            Hand-picked vehicles from trusted sources across the globe. Every car is inspected, documented, and priced fairly — what you see is what you get.
           </p>
         </div>
       </section>

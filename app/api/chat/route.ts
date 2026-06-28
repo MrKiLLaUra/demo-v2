@@ -13,11 +13,17 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 })
 
-const ratelimit = new Ratelimit({
-  redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(5, '1 m'),
-  analytics: true,
-})
+// Rate limiting is optional: only enabled when Upstash Redis is configured.
+// Without these env vars, Redis.fromEnv() throws, so guard it to keep the
+// chat endpoint working (just without rate limiting) when Upstash is absent.
+const ratelimit =
+  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+    ? new Ratelimit({
+        redis: Redis.fromEnv(),
+        limiter: Ratelimit.slidingWindow(5, '1 m'),
+        analytics: true,
+      })
+    : null
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,13 +34,15 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'anonymous'
-    const { success } = await ratelimit.limit(ip)
-    if (!success) {
-      return NextResponse.json(
-        { error: 'Whoa there! Sambi AI is taking a quick breather to prevent spam. Please try again in a minute.' },
-        { status: 429 },
-      )
+    if (ratelimit) {
+      const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'anonymous'
+      const { success } = await ratelimit.limit(ip)
+      if (!success) {
+        return NextResponse.json(
+          { error: 'Whoa there! Sambi AI is taking a quick breather to prevent spam. Please try again in a minute.' },
+          { status: 429 },
+        )
+      }
     }
 
     const body = (await request.json()) as { messages?: ChatMessage[] }
