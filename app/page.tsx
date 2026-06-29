@@ -5,7 +5,6 @@ import Link from "next/link"
 import Image from "next/image"
 import { ArrowRight, CheckCircle2 } from "lucide-react"
 import { HeroSection } from "@/components/home/hero-section"
-import { Testimonials } from "@/components/testimonials"
 import { WhyUs } from "@/components/why-us"
 
 const WHY_ITEMS = [
@@ -190,8 +189,6 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
-      <Testimonials />
 
       {/* ── CTA Strip ── */}
       <section className="relative py-20 md:py-28 px-6 md:px-8 border-t border-border overflow-hidden">

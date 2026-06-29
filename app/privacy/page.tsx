@@ -27,9 +27,6 @@ export default function PrivacyPage() {
           <a href="mailto:sambitopgearmotors@gmail.com">sambitopgearmotors@gmail.com</a> or call{" "}
           <a href="tel:+35799929323">+357 99 929 323</a>.
         </p>
-        <p className="text-xs text-muted-foreground/60">
-          [To complete before launch: company registration number and VAT number.]
-        </p>
       </LegalSection>
 
       <LegalSection heading="What we collect">

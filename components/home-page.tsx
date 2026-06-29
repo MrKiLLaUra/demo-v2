@@ -6,7 +6,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { Button } from "@/components/ui/button"
 import { CarCard } from "@/components/car-card"
 import { WhyUs } from "@/components/why-us"
-import { Testimonials } from "@/components/testimonials"
 import { Car, Page } from "@/lib/car-data"
 
 gsap.registerPlugin(ScrollTrigger)
@@ -266,7 +265,6 @@ export function HomePage({
         </div>
       </section>
 
-      <Testimonials />
       <WhyUs />
     </div>
   )
