@@ -4,24 +4,24 @@ import { ArrowRight, Award, Users, Globe, Wrench } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "About Us",
-  description: "Learn about Sambi Top Gear Motors — a family-run dealership in Limassol, Cyprus with over 7 years of experience in premium used cars.",
+  description: "Learn about Sambi Top Gear Motors — a family-run dealership in Limassol, Cyprus with over 8 years of experience and 1,000+ cars sold.",
 }
 
 const TEAM = [
   {
     name: "Kosmas Sambi",
     role: "CEO",
-    bio: "5 years in the automotive industry with a passion for matching people with the right car at the right price. Kosmas oversees every deal personally.",
+    bio: "8+ years in the automotive industry with a passion for matching people with the right car at the right price. Kosmas oversees every deal personally.",
   },
   {
     name: "Kostas Sambi",
     role: "Founder",
-    bio: "7 years building Sambi Top Gear from the ground up. Kostas has an encyclopaedic knowledge of every car on the lot and the European import market.",
+    bio: "8 years building Sambi Top Gear from the ground up. Kostas has an encyclopaedic knowledge of every car on the lot and the worldwide import market.",
   },
   {
     name: "Annisa Sambi",
     role: "Sales Manager",
-    bio: "Dedicated to making the buying experience as smooth as possible. Annisa handles financing, insurance coordination, and after-sale support.",
+    bio: "Dedicated to making the buying experience as smooth as possible. Annisa handles financing, paperwork, and after-sale support.",
   },
 ]
 
@@ -38,22 +38,22 @@ const VALUES = [
   },
   {
     Icon: Globe,
-    title: "European Network",
-    desc: "Our sourcing network spans the entire EU, giving you access to thousands of vehicles we can locate and import on your behalf.",
+    title: "Worldwide Network",
+    desc: "Our sourcing network spans Europe and beyond — we can locate and import vehicles from around the world on your behalf.",
   },
   {
     Icon: Wrench,
-    title: "Quality Control",
-    desc: "100-point inspection on every car before it reaches our lot. We only sell cars we'd put our own family in.",
+    title: "Quality First",
+    desc: "We hand-pick every car, and you're welcome to have any of them independently inspected before you buy. We only sell cars we'd put our own family in.",
   },
 ]
 
 const MILESTONES = [
-  { year: "2018", event: "Sambi Top Gear Motors founded in Limassol." },
-  { year: "2020", event: "Expanded to European vehicle sourcing across 8 countries." },
-  { year: "2022", event: "200+ cars sold. Launched same-day insurance partnerships." },
-  { year: "2024", event: "Introduced AI price engine for instant market valuations." },
-  { year: "2025", event: "New showroom and full-service financing desk open." },
+  { year: "2018", event: "Sambi Top Gear Motors founded in Limassol, Cyprus." },
+  { year: "2021", event: "Sourcing network expands worldwide — importing cars from across the globe." },
+  { year: "2023", event: "In-house payment plans launched — financing direct from us, no banks." },
+  { year: "2024", event: "Introduced our AI price engine for instant market valuations." },
+  { year: "2026", event: "Over 1,000 cars sold — and counting." },
 ]
 
 export default function AboutPage() {
@@ -87,10 +87,10 @@ export default function AboutPage() {
                   Sambi Top Gear Motors was founded in Limassol in 2018 with a single goal: to create a car-buying experience that feels honest, personal, and genuinely helpful — something rare in the used car market.
                 </p>
                 <p>
-                  We source hand-picked vehicles from across Europe, inspect every one rigorously, and price them fairly. No inflated tags, no pushy sales tactics. Just good cars and straight answers.
+                  We source hand-picked vehicles from across Europe and around the world, check every one carefully, and price them fairly. No inflated tags, no pushy sales tactics. Just good cars and straight answers.
                 </p>
                 <p>
-                  Over 200 satisfied customers and 7 years later, we've grown our team, our network, and our services — but the family values that started us haven't changed.
+                  Over 1,000 cars sold and 8 years later, we've grown our team, our network, and our services — but the family values that started us haven't changed.
                 </p>
               </div>
               <div className="mt-8">
@@ -107,10 +107,10 @@ export default function AboutPage() {
             {/* Stats */}
             <div data-aos="fade-up" data-aos-delay="100" className="grid grid-cols-2 gap-4">
               {[
-                { num: "7+",   label: "Years in Business" },
-                { num: "200+", label: "Cars Sold" },
-                { num: "100%", label: "Inspection Rate" },
-                { num: "2wk",  label: "Average Sourcing Time" },
+                { num: "8+",     label: "Years in Business" },
+                { num: "1000+",  label: "Cars Sold" },
+                { num: "2H",     label: "Avg. Sourcing Time" },
+                { num: "100%",   label: "Hand-Picked" },
               ].map(s => (
                 <div key={s.label} className="border border-border bg-card p-6 md:p-8">
                   <div className="font-display text-5xl md:text-6xl text-primary tracking-wide mb-2">{s.num}</div>

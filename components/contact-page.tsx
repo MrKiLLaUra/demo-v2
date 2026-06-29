@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { MapPin, Phone, Mail, Clock } from "lucide-react"
 
 const contactInfo = [
-  { icon: MapPin, label: "Address",          value: "Limassol, Cyprus" },
+  { icon: MapPin, label: "Address",          value: "Petrombei Mavromichali 3, Agios Athanasios 4102, Limassol, Cyprus" },
   { icon: Phone,  label: "Phone / WhatsApp", value: "+35799929323" },
   { icon: Mail,   label: "Email",            value: "sambitopgearmotors@gmail.com" },
   { icon: Clock,  label: "Hours",            value: "Mon–Sat: 10:00 – 18:00 · Sun: Closed" },
@@ -84,7 +84,7 @@ export function ContactPage() {
       >
         <iframe
           title="Sambi Top Gear Motors – Limassol"
-          src="https://maps.google.com/maps?q=Limassol%2C+Cyprus&t=&z=13&ie=UTF8&iwloc=&output=embed"
+          src="https://maps.google.com/maps?q=Petrombei%20Mavromichali%203%2C%20Agios%20Athanasios%204102%2C%20Cyprus&t=&z=16&ie=UTF8&iwloc=&output=embed"
           className="w-full h-full grayscale opacity-80"
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"

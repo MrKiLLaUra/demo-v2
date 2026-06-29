@@ -15,7 +15,7 @@ const SERVICES = [
   { label: "Used Car Sales",      href: "/services/used-car-sales" },
   { label: "Vehicle Sourcing",    href: "/services/vehicle-sourcing" },
   { label: "Financing",           href: "/services/financing" },
-  { label: "Insurance",           href: "/services/insurance" },
+  { label: "Warranty & After-Sale", href: "/services/warranty" },
   { label: "Pre-Sale Inspection", href: "/services/pre-sale-inspection" },
   { label: "AI Price Engine",     href: "/services/ai-price-engine" },
 ]
@@ -81,7 +81,7 @@ export function SiteFooter() {
               {[
                 { Icon: Phone, text: "+357 99 929 323", href: "tel:+35799929323" },
                 { Icon: Mail, text: "sambitopgearmotors@gmail.com", href: "mailto:sambitopgearmotors@gmail.com" },
-                { Icon: MapPin, text: "Limassol, Cyprus", href: null },
+                { Icon: MapPin, text: "Petrombei Mavromichali 3, Agios Athanasios 4102, Limassol", href: "https://maps.google.com/maps?q=Petrombei%20Mavromichali%203%2C%20Agios%20Athanasios%204102%2C%20Cyprus" },
               ].map(({ Icon, text, href }) => (
                 <li key={text} className="flex items-start gap-3">
                   <Icon className="w-4 h-4 text-primary mt-0.5 shrink-0" />

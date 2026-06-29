@@ -34,7 +34,7 @@ export default async function UsedCarSalesPage() {
             USED CAR SALES
           </h1>
           <p data-aos="fade-up" data-aos-delay="160" className="text-muted-foreground max-w-lg font-light leading-relaxed text-base md:text-lg">
-            Hand-picked vehicles from trusted sources across the globe. Every car is inspected, documented, and priced fairly — what you see is what you get.
+            Hand-picked vehicles from trusted sources across the globe. Every car is checked over, documented, and priced fairly — what you see is what you get.
           </p>
         </div>
       </section>

@@ -4,14 +4,14 @@ import { FinanceCalculator } from "@/components/services/finance-calculator"
 
 export const metadata: Metadata = {
   title: "Financing",
-  description: "Flexible car financing in Cyprus. We work with trusted local banks to get you a payment plan that fits your budget — quick approvals, clear terms.",
+  description: "Simple in-house car financing in Cyprus — no banks, no lengthy approvals. Pay a deposit and spread the balance over up to 12 months on our own vehicles.",
 }
 
 const POINTS = [
-  { title: "Trusted Local Partners", desc: "We work with established banks and financial partners across Cyprus to find your best rate." },
-  { title: "Plans That Fit", desc: "Payment plans tailored to your budget and timeline, not a one-size-fits-all package." },
-  { title: "Quick Approvals", desc: "Fast turnaround so you're not left waiting — often approved the same day you apply." },
-  { title: "Clear Terms", desc: "No hidden charges or fine-print surprises. You'll know exactly what you're paying." },
+  { title: "Straight From Us", desc: "Financing handled directly by us — no banks, no third parties, no drawn-out approvals." },
+  { title: "Simple Terms", desc: "A deposit of around 50% and the balance spread over up to 12 months, on our own cars." },
+  { title: "Fast & Personal", desc: "We sort the plan with you face to face. Decide today, sort the paperwork the same day." },
+  { title: "Clear, No Surprises", desc: "You'll know the deposit, the monthly amount and the end date up front. No hidden charges." },
 ]
 
 export default function FinancingPage() {
@@ -27,7 +27,8 @@ export default function FinancingPage() {
             FINANCING
           </h1>
           <p data-aos="fade-up" data-aos-delay="160" className="text-muted-foreground max-w-lg font-light leading-relaxed text-base md:text-lg">
-            We work with trusted local banks and financial partners in Cyprus to get you a payment plan that fits your budget. Quick approvals, clear terms.
+            We keep financing simple — no banks, no paperwork marathons. Pay a deposit of around 50% and spread the rest
+            over up to 12 months, directly with us, on our own vehicles.
           </p>
         </div>
       </section>

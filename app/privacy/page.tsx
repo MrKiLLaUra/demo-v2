@@ -18,8 +18,9 @@ export default function PrivacyPage() {
     >
       <LegalSection heading="Who we are">
         <p>
-          Sambi Top Gear Motors (&ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;) is a used car dealership based in
-          Limassol, Cyprus. We are the data controller responsible for your personal data.
+          Sambi Top Gear Motors (&ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;) is a used car dealership at
+          Petrombei Mavromichali 3, Agios Athanasios 4102, Limassol, Cyprus. We are the data controller responsible for
+          your personal data.
         </p>
         <p>
           For any privacy question or request, contact us at{" "}
@@ -27,7 +28,7 @@ export default function PrivacyPage() {
           <a href="tel:+35799929323">+357 99 929 323</a>.
         </p>
         <p className="text-xs text-muted-foreground/60">
-          [To complete before launch: registered business address, company registration number, and VAT number.]
+          [To complete before launch: company registration number and VAT number.]
         </p>
       </LegalSection>
 

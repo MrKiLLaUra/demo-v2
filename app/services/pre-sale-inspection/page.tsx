@@ -1,19 +1,18 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { Wrench, CheckCircle2 } from "lucide-react"
-import { InspectionChecklist } from "@/components/services/inspection-checklist"
 import { ServiceInquiryForm } from "@/components/services/service-inquiry-form"
 
 export const metadata: Metadata = {
   title: "Pre-Sale Inspection",
-  description: "Every car goes through our rigorous 100-point check before listing — engine, brakes, electrics and bodywork. Nothing gets missed.",
+  description: "Buy with confidence. You're welcome to have any of our cars independently inspected by a mechanic or garage of your choice before you commit.",
 }
 
 const POINTS = [
-  { title: "100-Point Check", desc: "A rigorous inspection covering every major system before a car is ever listed." },
-  { title: "Mechanical & Electrical", desc: "Engine, brakes, transmission and electrics are all tested and verified." },
-  { title: "Bodywork & Interior", desc: "We assess paint, panels and cabin condition so there are no nasty surprises." },
-  { title: "Nothing Gets Missed", desc: "If something isn't right, we fix it or flag it — you always get the full picture." },
+  { title: "Independent Checks Welcome", desc: "Have any car inspected by a mechanic or garage you trust, before you buy. We've got nothing to hide." },
+  { title: "Full History & Documents", desc: "We share the paperwork and service history we hold on every vehicle, so you know what you're buying." },
+  { title: "No Pressure", desc: "Take your time. Inspect it, test drive it, ask questions — then decide when you're ready." },
+  { title: "Straight Answers", desc: "Ask us anything about a car's condition and you'll get an honest answer, not a sales pitch." },
 ]
 
 export default function PreSaleInspectionPage() {
@@ -29,7 +28,8 @@ export default function PreSaleInspectionPage() {
             PRE-SALE INSPECTION
           </h1>
           <p data-aos="fade-up" data-aos-delay="160" className="text-muted-foreground max-w-lg font-light leading-relaxed text-base md:text-lg">
-            Every car goes through our rigorous 100-point check before listing. Engine, brakes, electrics, bodywork — nothing gets missed.
+            Want a car checked before you buy? We encourage it. You&rsquo;re welcome to have any of our vehicles
+            independently inspected by a mechanic or garage of your choice — no pressure, no hidden surprises.
           </p>
         </div>
       </section>
@@ -54,39 +54,27 @@ export default function PreSaleInspectionPage() {
         </div>
       </section>
 
-      {/* The checklist */}
-      <section className="border-t border-border bg-card py-20 md:py-28 px-6 md:px-8">
-        <div className="max-w-[1320px] mx-auto">
-          <div data-aos="fade-up" className="mb-12">
-            <div className="text-[10px] tracking-[0.35em] text-primary mb-2 font-semibold">WHAT WE CHECK</div>
-            <h2 className="font-display text-4xl md:text-5xl tracking-wide">THE 100-POINT CHECK</h2>
-            <p className="text-muted-foreground font-light mt-4 max-w-xl">Tap any category to see what our technicians go through before a car is listed.</p>
-          </div>
-          <div data-aos="fade-up" data-aos-delay="100">
-            <InspectionChecklist />
-          </div>
-        </div>
-      </section>
-
-      {/* Request a report */}
+      {/* Arrange an inspection */}
       <section className="border-t border-border py-20 md:py-28 px-6 md:px-8">
         <div className="max-w-[1320px] mx-auto">
           <div className="grid lg:grid-cols-[1fr_520px] gap-12 xl:gap-20 items-start">
             <div data-aos="fade-up">
               <div className="text-[10px] tracking-[0.35em] text-primary mb-3 font-semibold">FULL TRANSPARENCY</div>
-              <h2 className="font-display text-4xl md:text-5xl tracking-wide mb-6 leading-tight">REQUEST AN<br />INSPECTION REPORT</h2>
+              <h2 className="font-display text-4xl md:text-5xl tracking-wide mb-6 leading-tight">ARRANGE AN<br />INSPECTION</h2>
               <p className="text-muted-foreground font-light leading-relaxed mb-6">
-                Interested in a specific car? Ask us for its full inspection report and we'll send the detailed results over so you know exactly what you're buying — before you commit.
+                Found a car you like? Tell us which one and we&rsquo;ll arrange a time for you — or your own mechanic — to
+                come and inspect it, and share the documents and history we have on it.
               </p>
               <p className="text-sm text-muted-foreground/70 font-light leading-relaxed">
-                Every car on our lot has already passed the check. <Link href="/cars" className="text-primary hover:underline">Browse the inventory</Link> and tell us which one you'd like the report for.
+                <Link href="/cars" className="text-primary hover:underline">Browse the inventory</Link> and tell us which
+                car you&rsquo;d like to check over.
               </p>
             </div>
             <div data-aos="fade-up" data-aos-delay="100">
               <ServiceInquiryForm
-                subject="Inspection report request"
-                submitLabel="REQUEST REPORT"
-                messagePlaceholder="Which car would you like the inspection report for? Add the make, model and year."
+                subject="Inspection request"
+                submitLabel="REQUEST INSPECTION"
+                messagePlaceholder="Which car would you like to inspect? Add the make, model and year."
               />
             </div>
           </div>

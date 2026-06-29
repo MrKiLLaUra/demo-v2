@@ -4,37 +4,37 @@ import { Car, Globe, CreditCard, Shield, Bot, Wrench, ArrowRight } from "lucide-
 
 export const metadata: Metadata = {
   title: "Services",
-  description: "Used car sales, vehicle sourcing, financing, insurance and more — all under one roof in Limassol.",
+  description: "Used car sales, worldwide vehicle sourcing, in-house financing, warranty and more — all under one roof in Limassol.",
 }
 
 const SERVICES = [
   {
     Icon: Car,
     title: "Used Car Sales",
-    desc: "Hand-picked vehicles from trusted sources across Europe. Every car is inspected, documented, and priced fairly. No surprises.",
+    desc: "Hand-picked vehicles from trusted sources across the globe. Every car is checked over, documented, and priced fairly. No surprises.",
     cta: "Learn More",
     href: "/services/used-car-sales",
   },
   {
     Icon: Globe,
     title: "Vehicle Sourcing",
-    desc: "Want a specific make, model, year or colour we don't have in stock? We source it across Europe and import it directly for you within two weeks.",
+    desc: "Want a specific make, model, year or colour we don't have in stock? We source it from anywhere in the world and import it directly for you within two weeks.",
     cta: "Learn More",
     href: "/services/vehicle-sourcing",
   },
   {
     Icon: CreditCard,
     title: "Financing",
-    desc: "We work with trusted local banks and financial partners in Cyprus to get you a payment plan that fits your budget. Quick approvals, clear terms.",
+    desc: "No banks, no lengthy approvals. Pay a deposit of around 50% and spread the rest over up to 12 months, directly with us, on our own cars.",
     cta: "Learn More",
     href: "/services/financing",
   },
   {
     Icon: Shield,
-    title: "Insurance",
-    desc: "Drive off the lot fully covered. We partner with leading Cyprus insurance providers to get you competitive rates on the same day.",
+    title: "Warranty & After-Sale",
+    desc: "Every car comes with a 1-year warranty on the engine and gearbox. A-grade cars only — we back them because we know they're flawless.",
     cta: "Learn More",
-    href: "/services/insurance",
+    href: "/services/warranty",
   },
   {
     Icon: Bot,
@@ -46,7 +46,7 @@ const SERVICES = [
   {
     Icon: Wrench,
     title: "Pre-Sale Inspection",
-    desc: "Every car goes through our rigorous 100-point check before listing. Engine, brakes, electrics, bodywork — nothing gets missed.",
+    desc: "Buy with confidence — you're welcome to have any car independently inspected by a mechanic or garage of your choice before you commit.",
     cta: "Learn More",
     href: "/services/pre-sale-inspection",
   },
@@ -55,8 +55,8 @@ const SERVICES = [
 const PROCESS = [
   { n: "01", title: "Browse & Select", desc: "Explore our inventory online or tell us what you want." },
   { n: "02", title: "Test Drive",      desc: "Book a same-day test drive from our Limassol lot." },
-  { n: "03", title: "Finance & Cover", desc: "We handle financing and insurance on the same day." },
-  { n: "04", title: "Drive Away",      desc: "Pick up your car fully covered and ready to go." },
+  { n: "03", title: "Finance & Sort",  desc: "We sort in-house financing and the paperwork on the same day." },
+  { n: "04", title: "Drive Away",      desc: "Pick up your car, backed by our after-sale support." },
 ]
 
 export default function ServicesPage() {

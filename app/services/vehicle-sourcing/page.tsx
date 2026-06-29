@@ -5,12 +5,12 @@ import { SourcingForm } from "@/components/services/sourcing-form"
 
 export const metadata: Metadata = {
   title: "Vehicle Sourcing",
-  description: "Can't find it in stock? We source any make, model, year or colour across Europe and import it directly to Cyprus within two weeks.",
+  description: "Can't find it in stock? We source any make, model, year or colour from anywhere in the world and import it directly to Cyprus within two weeks.",
 }
 
 const POINTS = [
   { title: "Tell Us What You Want", desc: "Give us the make, model, year, colour and budget — we handle the search from there." },
-  { title: "Europe-Wide Network", desc: "Our sourcing network spans the EU, giving access to thousands of vehicles beyond our lot." },
+  { title: "Worldwide Network", desc: "Our sourcing network spans Europe and beyond, giving access to thousands of vehicles around the world." },
   { title: "Direct Import", desc: "We import the car directly for you, handling logistics and paperwork end to end." },
   { title: "Within Two Weeks", desc: "Most vehicles are located and on their way to Cyprus in under two weeks." },
 ]
@@ -28,7 +28,7 @@ export default function VehicleSourcingPage() {
             VEHICLE SOURCING
           </h1>
           <p data-aos="fade-up" data-aos-delay="160" className="text-muted-foreground max-w-lg font-light leading-relaxed text-base md:text-lg">
-            Want a specific make, model, year or colour we don't have in stock? We source it across Europe and import it directly for you within two weeks.
+            Want a specific make, model, year or colour we don't have in stock? We source it from anywhere in the world and import it directly for you within two weeks.
           </p>
         </div>
       </section>
@@ -61,7 +61,7 @@ export default function VehicleSourcingPage() {
               <div className="text-[10px] tracking-[0.35em] text-primary mb-3 font-semibold">START THE SEARCH</div>
               <h2 className="font-display text-4xl md:text-5xl tracking-wide mb-6 leading-tight">TELL US WHAT<br />YOU'RE AFTER</h2>
               <p className="text-muted-foreground font-light leading-relaxed mb-6">
-                Fill in as much or as little as you know. The more detail you give us — make, model, year, budget, must-have features — the faster we can match you with the right car from our European network.
+                Fill in as much or as little as you know. The more detail you give us — make, model, year, budget, must-have features — the faster we can match you with the right car from our worldwide network.
               </p>
               <p className="text-sm text-muted-foreground/70 font-light leading-relaxed">
                 Prefer to talk it through? <Link href="/contact" className="text-primary hover:underline">Contact us</Link> or message us on WhatsApp and we'll take it from there.

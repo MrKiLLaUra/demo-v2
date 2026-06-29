@@ -112,8 +112,8 @@ export function CarCard({
       ref={cardRef}
       className="group border border-border bg-card overflow-hidden cursor-pointer transition-[border-color,box-shadow] duration-300 hover:border-primary hover:shadow-[0_8px_28px_rgba(227,31,43,0.12)]"
     >
-      {/* Image */}
-      <div className="relative h-40 md:h-44 bg-secondary overflow-hidden" onClick={onClick}>
+      {/* Image — 4:3 on phones (so photos don't crop), fixed height on larger screens */}
+      <div className="relative aspect-[4/3] sm:aspect-auto sm:h-44 bg-secondary overflow-hidden" onClick={onClick}>
         <PreviewImage
           src={car.images?.preview ?? ""}
           alt={`${car.year} ${car.make} ${car.model}`}
