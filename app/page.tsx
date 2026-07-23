@@ -157,10 +157,10 @@ export default async function HomePage() {
         <div className="max-w-[1320px] mx-auto px-6 md:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-0 md:divide-x divide-border">
             {[
-              { n: "200+", label: "Cars Sold" },
-              { n: "7+",   label: "Years Experience" },
-              { n: "100%", label: "Transparent Pricing" },
-              { n: "24/7", label: "AI Assistant" },
+              { n: "1000+", label: "Cars Sold" },
+              { n: "8+",    label: "Years Experience" },
+              { n: "100%",  label: "Transparent Pricing" },
+              { n: "24/7",  label: "AI Assistant" },
             ].map((s, i) => (
               <div key={s.label} data-aos="fade-up" data-aos-delay={i * 80} className="text-center md:px-8">
                 <div className="font-display text-4xl md:text-5xl tracking-wide text-primary mb-1">{s.n}</div>

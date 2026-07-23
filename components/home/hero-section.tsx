@@ -110,10 +110,10 @@ export function HeroSection() {
         <div className="max-w-[1320px] mx-auto px-6 md:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-border">
             {[
-              { n: "200+", label: "Cars Sold" },
-              { n: "7+",   label: "Years in Business" },
-              { n: "2 wks", label: "Avg. Sourcing Time" },
-              { n: "24/7", label: "AI Concierge" },
+              { n: "1000+", label: "Cars Sold" },
+              { n: "8+",    label: "Years in Business" },
+              { n: "2H",    label: "Avg. Sourcing Time" },
+              { n: "24/7",  label: "AI Concierge" },
             ].map((s) => (
               <div key={s.label} className="py-5 px-6 md:px-8 text-center">
                 <div className="font-display text-2xl md:text-3xl tracking-wide text-primary">{s.n}</div>

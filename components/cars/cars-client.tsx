@@ -322,7 +322,7 @@ export function CarsClient({ initialCars }: { initialCars: Car[] }) {
 
           {/* Results */}
           <div>
-            <div className="flex items-center justify-between gap-4 mb-6">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
               {/* Mobile: filter button */}
               <div className="flex items-center gap-3">
                 <button
@@ -340,7 +340,7 @@ export function CarsClient({ initialCars }: { initialCars: Car[] }) {
                 </p>
               </div>
 
-              <div className="flex items-center gap-4">
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4">
                 {/* Hide sold toggle */}
                 <div className="flex items-center gap-2">
                   <Switch id="hide-sold" checked={hideSold} onCheckedChange={setHideSold} disabled={soldCount === 0} />
@@ -351,7 +351,7 @@ export function CarsClient({ initialCars }: { initialCars: Car[] }) {
 
                 {/* Sort */}
                 <Select value={sortBy} onValueChange={handleSortChange}>
-                <SelectTrigger className="w-[200px] bg-input border-border">
+                <SelectTrigger className="w-[160px] sm:w-[200px] bg-input border-border">
                   <ArrowUpDown className="w-3.5 h-3.5 mr-2" />
                   <SelectValue />
                 </SelectTrigger>
