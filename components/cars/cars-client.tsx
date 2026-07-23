@@ -217,7 +217,7 @@ export function CarsClient({ initialCars }: { initialCars: Car[] }) {
   const [results, setResults] = useState<Car[]>(() => sortCars(initialCars, "year-new"))
   const [searched, setSearched] = useState(false)
   const [sheetOpen, setSheetOpen] = useState(false)
-  const [hideSold, setHideSold] = useState(false)
+  const [hideSold, setHideSold] = useState(true)
   const [reqForm, setReqForm] = useState({ name: "", phone: "", note: "" })
   const [reqSent, setReqSent] = useState(false)
   const [reqLoading, setReqLoading] = useState(false)
