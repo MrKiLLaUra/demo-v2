@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/next'
 import { GoogleAnalytics } from '@/components/google-analytics'
 import { Clarity } from '@/components/clarity'
 import { SiteNav } from '@/components/site-nav'
+import { SiteLoadingScreen } from '@/components/site-loading-screen'
 import { SiteFooter } from '@/components/site-footer'
 import { LenisProvider } from '@/components/lenis-provider'
 import { FavoritesProvider } from '@/components/favorites-provider'
@@ -65,6 +66,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${bebasNeue.variable} ${barlow.variable} font-sans antialiased min-h-screen flex flex-col`}>
         <FavoritesProvider>
           <LenisProvider>
+            <SiteLoadingScreen />
             <AosInit />
             <SiteNav />
             <PageTransition>

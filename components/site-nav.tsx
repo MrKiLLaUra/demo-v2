@@ -52,7 +52,7 @@ export function SiteNav() {
       >
         <div className="max-w-[1320px] mx-auto px-6 md:px-8 h-16 md:h-18 flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="block relative overflow-hidden shrink-0" style={{ width: 200, height: 44 }}>
+          <Link id="site-nav-logo" href="/" className="block relative overflow-hidden shrink-0" style={{ width: 200, height: 44 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/sambi-logo.png"

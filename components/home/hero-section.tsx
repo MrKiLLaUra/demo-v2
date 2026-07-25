@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { gsap } from "gsap"
 import { ArrowRight } from "lucide-react"
+import { SITE_INTRO_REVEAL_EVENT } from "@/lib/site-intro"
 
 export function HeroSection() {
   const eyebrowRef = useRef<HTMLDivElement>(null)
@@ -14,6 +15,18 @@ export function HeroSection() {
   const ctaRef = useRef<HTMLDivElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const [videoReady, setVideoReady] = useState(false)
+  // If the intro splash already ran earlier this session, don't wait on it again.
+  const [introDone, setIntroDone] = useState(false)
+
+  useEffect(() => {
+    if (sessionStorage.getItem("site-loaded")) {
+      setIntroDone(true)
+      return
+    }
+    const handler = () => setIntroDone(true)
+    window.addEventListener(SITE_INTRO_REVEAL_EVENT, handler)
+    return () => window.removeEventListener(SITE_INTRO_REVEAL_EVENT, handler)
+  }, [])
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -32,7 +45,7 @@ export function HeroSection() {
       {/* Background video — fades in from black once it can play */}
       <video
         className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[2000ms] ease-out ${
-          videoReady ? "opacity-100" : "opacity-0"
+          videoReady && introDone ? "opacity-100" : "opacity-0"
         }`}
         src="/videos/hero.mp4"
         autoPlay
