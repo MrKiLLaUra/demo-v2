@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 }
 
 const INFO = [
-  { Icon: MapPin, label: "Address",          value: "Limassol, Cyprus" },
+  { Icon: MapPin, label: "Address",          value: "Petrombei Mavromichali 3, Agios Athanasios 4102, Limassol, Cyprus", href: "https://maps.google.com/maps?q=34.697780218009925,33.070304565056446" },
   { Icon: Phone,  label: "Phone / WhatsApp", value: "+357 99 929323",   href: "tel:+35799929323" },
   { Icon: Mail,   label: "Email",            value: "sambitopgearmotors@gmail.com", href: "mailto:sambitopgearmotors@gmail.com" },
   { Icon: Clock,  label: "Hours",            value: "Mon – Sat: 9:00 – 19:00" },
@@ -82,13 +82,13 @@ export default function ContactPage() {
                 <div className="text-[10px] tracking-[0.35em] text-primary mb-4 font-semibold">LOCATION</div>
                 <div className="border border-border overflow-hidden">
                   <iframe
-                    src="https://maps.google.com/maps?q=Limassol%2C+Cyprus&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                    src="https://maps.google.com/maps?q=34.697780218009925,33.070304565056446&z=17&ie=UTF8&iwloc=&output=embed"
                     width="100%"
                     height="280"
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
-                    className="grayscale opacity-75 block"
-                    title="Sambi Top Gear Motors – Limassol, Cyprus"
+                    className="block"
+                    title="Sambi Top Gear Motors – Petrombei Mavromichali 3, Limassol"
                   />
                 </div>
               </div>
