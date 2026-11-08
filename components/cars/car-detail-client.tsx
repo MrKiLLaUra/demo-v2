@@ -10,6 +10,7 @@ import { Car, fmt, carSlug } from "@/lib/car-data"
 const BOOK_SLOTS = ["10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30","17:00","17:30"]
 import { useFavorites } from "@/components/favorites-provider"
 import { cn } from "@/lib/utils"
+import { BLACK_FRIDAY_ACTIVE } from "@/lib/black-friday"
 import { toast } from "sonner"
 import { CarGallery } from "@/components/cars/car-gallery"
 
@@ -151,6 +152,9 @@ export function CarDetailClient({ car, related }: Props) {
                 {priceVisible ? (
                   hasSale ? (
                     <div className="flex flex-col gap-1">
+                      {BLACK_FRIDAY_ACTIVE && car.black_friday === true && (
+                        <span className="text-primary text-[10px] tracking-[0.25em] font-semibold">BLACK FRIDAY DEAL</span>
+                      )}
                       <span className="text-muted-foreground line-through text-lg font-medium">{fmt(car.price!)}</span>
                       <div className="bg-primary text-primary-foreground px-5 py-2.5 font-display text-2xl tracking-wide -rotate-1 shadow-lg inline-block">
                         {fmt(car.sale_price!)}

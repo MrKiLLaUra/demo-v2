@@ -7,6 +7,10 @@ type ChatMessage = {
   content: string
 }
 
+const MAINTENANCE_MODE = true
+const MAINTENANCE_MESSAGE =
+  "Sambi AI is currently undergoing maintenance. Please click the red BOOK A TEST DRIVE button to reach Kosmas directly on WhatsApp in the meantime."
+
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -33,6 +37,12 @@ export function ChatWidget() {
     setMessages(nextMessages)
     setInput('')
     setError(null)
+
+    if (MAINTENANCE_MODE) {
+      setMessages((prev) => [...prev, { role: 'assistant', content: MAINTENANCE_MESSAGE }])
+      return
+    }
+
     setIsLoading(true)
 
     try {

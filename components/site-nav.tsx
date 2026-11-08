@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation"
 import { Heart, Menu, X, MessageCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useFavorites } from "@/components/favorites-provider"
+import { BlackFridayBanner } from "@/components/black-friday-banner"
+import { BLACK_FRIDAY_ACTIVE } from "@/lib/black-friday"
 
 const LINKS = [
   { href: "/",         label: "Home" },
@@ -50,6 +52,7 @@ export function SiteNav() {
             : "bg-transparent"
         )}
       >
+        {BLACK_FRIDAY_ACTIVE && <BlackFridayBanner />}
         <div className="max-w-[1320px] mx-auto px-6 md:px-8 h-16 md:h-18 flex items-center justify-between">
           {/* Logo */}
           <Link id="site-nav-logo" href="/" className="block relative overflow-hidden shrink-0" style={{ width: 200, height: 44 }}>
@@ -119,7 +122,8 @@ export function SiteNav() {
       {/* Mobile menu */}
       <div
         className={cn(
-          "fixed inset-0 z-40 bg-background flex flex-col pt-16 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)]",
+          "fixed inset-0 z-40 bg-background flex flex-col transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)]",
+          BLACK_FRIDAY_ACTIVE ? "pt-24" : "pt-16",
           mobileOpen ? "translate-y-0 pointer-events-auto" : "-translate-y-full pointer-events-none"
         )}
       >

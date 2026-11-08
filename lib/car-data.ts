@@ -16,6 +16,7 @@ export interface Car {
   status?: string
   new_stock?: boolean
   sale_price?: number | null
+  black_friday?: boolean
   ai_blurb?: string
   created_at?: string | null
   images: {
@@ -180,6 +181,7 @@ export async function fetchCarById(id: number): Promise<Car | null> {
     status:       ((data.status || data.Status) as string | null) ?? undefined,
     new_stock:    (data.new_stock as boolean | null) ?? false,
     sale_price:   (data.sale_price as number | null) ?? null,
+    black_friday: (data.black_friday as boolean | null) ?? false,
     ai_blurb:     (data.ai_blurb as string | null) ?? undefined,
     created_at:   (data.created_at as string | null) ?? null,
     images:       buildImageUrls(data.images),
@@ -223,6 +225,7 @@ export async function fetchCars(): Promise<Car[]> {
     status:       ((row.status || row.Status) as string | null) ?? undefined,
     new_stock:    (row.new_stock as boolean | null) ?? false,
     sale_price:   (row.sale_price as number | null) ?? null,
+    black_friday: (row.black_friday as boolean | null) ?? false,
     ai_blurb:     (row.ai_blurb as string | null) ?? undefined,
     created_at:   (row.created_at as string | null) ?? null,
     images:       buildImageUrls(row.images),

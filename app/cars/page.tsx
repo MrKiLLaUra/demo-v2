@@ -9,7 +9,11 @@ export const metadata: Metadata = {
   description: "Browse our full inventory of hand-picked, pre-inspected used cars in Limassol, Cyprus.",
 }
 
-export default async function CarsPage() {
-  const cars = await fetchCars()
-  return <CarsClient initialCars={cars} />
+export default async function CarsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+  const [cars, params] = await Promise.all([fetchCars(), searchParams])
+  return <CarsClient initialCars={cars} initialBlackFriday={params.blackfriday === "1"} />
 }

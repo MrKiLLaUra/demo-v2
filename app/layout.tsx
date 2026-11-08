@@ -14,6 +14,7 @@ import { FavoritesDrawerGlobal } from '@/components/favorites-drawer-global'
 import { Toaster } from '@/components/ui/sonner'
 import { PageTransition } from '@/components/page-transition'
 import { CookieBanner } from '@/components/cookie-banner'
+import { BLACK_FRIDAY_ACTIVE } from '@/lib/black-friday'
 import './globals.css'
 
 const bebasNeue = Bebas_Neue({
@@ -63,7 +64,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="dark">
-      <body className={`${bebasNeue.variable} ${barlow.variable} font-sans antialiased min-h-screen flex flex-col`}>
+      <body className={`${bebasNeue.variable} ${barlow.variable} font-sans antialiased min-h-screen flex flex-col${BLACK_FRIDAY_ACTIVE ? ' pt-8' : ''}`}>
         <FavoritesProvider>
           <LenisProvider>
             <SiteLoadingScreen />

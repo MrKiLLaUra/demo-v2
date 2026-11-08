@@ -16,6 +16,7 @@ import {
 } from "@/lib/car-data"
 import { useFavorites } from "@/components/favorites-provider"
 import { cn } from "@/lib/utils"
+import { BLACK_FRIDAY_ACTIVE } from "@/lib/black-friday"
 import { Heart, MessageCircle } from "lucide-react"
 import { CarLoadingScreen } from "@/components/car-loading-screen"
 
@@ -73,6 +74,11 @@ function CarCardItem({ car, onNavigate }: { car: Car; onNavigate: (car: Car) => 
           {newArrival && !isSold && (
             <div className="absolute top-3 left-3 bg-primary text-primary-foreground text-[9px] tracking-[0.2em] font-semibold px-2.5 py-1">
               NEW
+            </div>
+          )}
+          {car.black_friday === true && !isSold && BLACK_FRIDAY_ACTIVE && (
+            <div className="absolute bottom-3 left-3 bg-black/80 text-primary text-[9px] tracking-[0.2em] font-semibold px-2.5 py-1 border border-primary/60">
+              BLACK FRIDAY
             </div>
           )}
           <div className="absolute top-3 right-3">
@@ -210,7 +216,7 @@ function FilterPanel({
   )
 }
 
-export function CarsClient({ initialCars }: { initialCars: Car[] }) {
+export function CarsClient({ initialCars, initialBlackFriday = false }: { initialCars: Car[]; initialBlackFriday?: boolean }) {
   const router = useRouter()
   const [filters, setFilters] = useState<Filters>(DEFAULT)
   const [sortBy, setSortBy] = useState<SortOption>("year-new")
@@ -218,6 +224,7 @@ export function CarsClient({ initialCars }: { initialCars: Car[] }) {
   const [searched, setSearched] = useState(false)
   const [sheetOpen, setSheetOpen] = useState(false)
   const [hideSold, setHideSold] = useState(true)
+  const [bfOnly, setBfOnly] = useState(initialBlackFriday)
   const [reqForm, setReqForm] = useState({ name: "", phone: "", note: "" })
   const [reqSent, setReqSent] = useState(false)
   const [reqLoading, setReqLoading] = useState(false)
@@ -244,9 +251,10 @@ export function CarsClient({ initialCars }: { initialCars: Car[] }) {
   // Apply the "hide sold" toggle on top of the current search results so it
   // takes effect instantly without re-running the search.
   const displayed = useMemo(
-    () => (hideSold ? results.filter(c => !isSoldCar(c)) : results),
-    [results, hideSold]
+    () => results.filter(c => (!hideSold || !isSoldCar(c)) && (!bfOnly || c.black_friday === true)),
+    [results, hideSold, bfOnly]
   )
+  const bfCount = useMemo(() => results.filter(c => c.black_friday === true && !isSoldCar(c)).length, [results])
   const soldCount = useMemo(() => results.filter(isSoldCar).length, [results])
 
   const doSearch = useCallback(() => {
@@ -341,6 +349,16 @@ export function CarsClient({ initialCars }: { initialCars: Car[] }) {
               </div>
 
               <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+                {/* Black Friday toggle */}
+                {BLACK_FRIDAY_ACTIVE && (
+                  <div className="flex items-center gap-2">
+                    <Switch id="black-friday" checked={bfOnly} onCheckedChange={setBfOnly} />
+                    <Label htmlFor="black-friday" className="text-xs tracking-widest text-primary font-semibold cursor-pointer whitespace-nowrap">
+                      BLACK FRIDAY DEALS{bfCount > 0 ? ` (${bfCount})` : ""}
+                    </Label>
+                  </div>
+                )}
+
                 {/* Hide sold toggle */}
                 <div className="flex items-center gap-2">
                   <Switch id="hide-sold" checked={hideSold} onCheckedChange={setHideSold} disabled={soldCount === 0} />
@@ -370,6 +388,17 @@ export function CarsClient({ initialCars }: { initialCars: Car[] }) {
             {displayed.length > 0 ? (
               <div className="grid sm:grid-cols-2 gap-5">
                 {displayed.map(car => <CarCardItem key={car.id} car={car} onNavigate={handleNavigate} />)}
+              </div>
+            ) : bfOnly && results.length > 0 ? (
+              <div className="border border-border bg-card p-8 md:p-10 max-w-lg text-center">
+                <div className="text-[10px] tracking-[0.3em] text-primary mb-3 font-semibold">BLACK FRIDAY</div>
+                <h2 className="font-display text-2xl tracking-wide mb-3">NO DEALS MATCH</h2>
+                <p className="text-sm text-muted-foreground mb-6 leading-relaxed font-light">
+                  None of the Black Friday cars match your filters. Turn the switch off to see every car.
+                </p>
+                <Button variant="outline" onClick={() => setBfOnly(false)} className="font-display tracking-widest">
+                  SHOW ALL CARS
+                </Button>
               </div>
             ) : results.length > 0 && hideSold ? (
               <div className="border border-border bg-card p-8 md:p-10 max-w-lg text-center">

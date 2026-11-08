@@ -6,6 +6,7 @@ import Image from "next/image"
 import { ArrowRight, CheckCircle2 } from "lucide-react"
 import { HeroSection } from "@/components/home/hero-section"
 import { WhyUs } from "@/components/why-us"
+import { BLACK_FRIDAY_ACTIVE } from "@/lib/black-friday"
 
 const WHY_ITEMS = [
   { label: "Inspected", desc: "Every car passes our 100-point check before listing." },
@@ -53,6 +54,8 @@ export default async function HomePage() {
     })
     .slice(0, 6)
 
+  const saleCount = allCars.filter(c => c.status?.toLowerCase() !== "sold" && c.black_friday === true).length
+
   return (
     <>
       <script
@@ -60,6 +63,29 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <HeroSection />
+
+      {/* ── Black Friday ── */}
+      {BLACK_FRIDAY_ACTIVE && saleCount > 0 && (
+        <section className="relative border-b border-border bg-card overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(227,31,43,0.1)_0%,transparent_70%)] pointer-events-none" />
+          <div className="relative max-w-[1320px] mx-auto px-6 md:px-8 py-10 md:py-12 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+            <div>
+              <div className="text-[10px] tracking-[0.35em] text-primary mb-2 font-semibold">LIMITED TIME</div>
+              <h2 className="font-display text-4xl md:text-6xl tracking-wide leading-none">BLACK FRIDAY DEALS</h2>
+              <p className="text-muted-foreground font-light mt-3">
+                {saleCount} {saleCount === 1 ? "car" : "cars"} with reduced prices right now.
+              </p>
+            </div>
+            <Link
+              href="/cars?blackfriday=1"
+              className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground px-9 py-4 font-display text-lg tracking-[0.15em] transition-colors group"
+            >
+              SHOP THE DEALS
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+        </section>
+      )}
 
       {/* ── Featured Cars ── */}
       <section className="py-20 md:py-28 px-6 md:px-8">
@@ -87,6 +113,7 @@ export default async function HomePage() {
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {featured.map((car, i) => {
                 const priceVisible = car.showPrice === true && car.price !== null
+                const hasSale = priceVisible && (car.sale_price ?? 0) > 0
                 return (
                   <Link
                     key={car.id}
@@ -109,9 +136,16 @@ export default async function HomePage() {
                       )}
                       <div className="absolute top-3 right-3">
                         {priceVisible ? (
-                          <span className="bg-primary text-primary-foreground px-3 py-1.5 font-display text-base tracking-wide">
-                            {fmt(car.price!)}
-                          </span>
+                          hasSale ? (
+                            <div className="flex flex-col items-end gap-0.5">
+                              <span className="text-[10px] text-white/60 line-through bg-black/50 px-2 py-0.5 backdrop-blur-sm">{fmt(car.price!)}</span>
+                              <span className="bg-primary text-primary-foreground px-3 py-1.5 font-display text-base tracking-wide -rotate-2 shadow-lg inline-block">{fmt(car.sale_price!)}</span>
+                            </div>
+                          ) : (
+                            <span className="bg-primary text-primary-foreground px-3 py-1.5 font-display text-base tracking-wide">
+                              {fmt(car.price!)}
+                            </span>
+                          )
                         ) : (
                           <span className="border border-primary/70 text-primary px-2.5 py-1 text-[10px] tracking-widest bg-background/80 backdrop-blur-sm">
                             POA
